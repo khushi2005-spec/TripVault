@@ -252,6 +252,260 @@
 
 // export default EditTrip;
 
+// import { useEffect, useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+
+// import API from "../services/api";
+// import Navbar from "../components/Navbar";
+
+// function EditTrip() {
+//   const navigate = useNavigate();
+//   const { id } = useParams();
+
+//   const [formData, setFormData] = useState({
+//     title: "",
+//     destination: "",
+//     startDate: "",
+//     endDate: "",
+//     description: "",
+//     coverImage: "",
+//   });
+
+//   const [loading, setLoading] = useState(true);
+//   const [saving, setSaving] = useState(false);
+//   const [error, setError] = useState("");
+//   const [message, setMessage] = useState("");
+
+//   useEffect(() => {
+//     const getTrip = async () => {
+//       try {
+//         const response = await API.get("/trips");
+
+//         const trip = response.data.trips.find(
+//           (item) => item._id === id
+//         );
+
+//         if (!trip) {
+//           setError("Trip not found");
+//           return;
+//         }
+
+//         setFormData({
+//           title: trip.title || "",
+//           destination: trip.destination || "",
+//           startDate: trip.startDate
+//             ? trip.startDate.substring(0, 10)
+//             : "",
+//           endDate: trip.endDate
+//             ? trip.endDate.substring(0, 10)
+//             : "",
+//           description: trip.description || "",
+//           coverImage: trip.coverImage || "",
+//         });
+//       } catch (error) {
+//         console.error(error);
+
+//         setError(
+//           error.response?.data?.message ||
+//             "Failed to load trip"
+//         );
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     getTrip();
+//   }, [id]);
+
+//   const handleChange = (e) => {
+//     setFormData({
+//       ...formData,
+//       [e.target.name]: e.target.value,
+//     });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     setError("");
+//     setMessage("");
+//     setSaving(true);
+
+//     try {
+//       const response = await API.put(
+//         `/trips/${id}`,
+//         formData
+//       );
+
+//       setMessage(response.data.message);
+
+//       setTimeout(() => {
+//         navigate("/dashboard");
+//       }, 1000);
+//     } catch (error) {
+//       console.error(error);
+
+//       setError(
+//         error.response?.data?.message ||
+//           "Failed to update trip"
+//       );
+//     } finally {
+//       setSaving(false);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="loading">
+//         Loading trip...
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="trip-form-page">
+
+//       <Navbar />
+
+//       <main className="trip-form-container">
+
+//         <div className="trip-form-header">
+
+//           <p className="small-heading">
+//             UPDATE MEMORY
+//           </p>
+
+//           <h1>
+//             Edit Your Trip
+//           </h1>
+
+//         </div>
+
+//         <div className="trip-form-card">
+
+//           {error && (
+//             <div className="error-message">
+//               {error}
+//             </div>
+//           )}
+
+//           {message && (
+//             <div className="success-message">
+//               {message}
+//             </div>
+//           )}
+
+//           <form onSubmit={handleSubmit}>
+
+//             <div className="form-group">
+//               <label>Trip Title</label>
+
+//               <input
+//                 type="text"
+//                 name="title"
+//                 value={formData.title}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </div>
+
+//             <div className="form-group">
+//               <label>Destination</label>
+
+//               <input
+//                 type="text"
+//                 name="destination"
+//                 value={formData.destination}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </div>
+
+//             <div className="date-row">
+
+//               <div className="form-group">
+//                 <label>Start Date</label>
+
+//                 <input
+//                   type="date"
+//                   name="startDate"
+//                   value={formData.startDate}
+//                   onChange={handleChange}
+//                   required
+//                 />
+//               </div>
+
+//               <div className="form-group">
+//                 <label>End Date</label>
+
+//                 <input
+//                   type="date"
+//                   name="endDate"
+//                   value={formData.endDate}
+//                   onChange={handleChange}
+//                   required
+//                 />
+//               </div>
+
+//             </div>
+
+//             <div className="form-group">
+//               <label>Description</label>
+
+//               <textarea
+//                 name="description"
+//                 value={formData.description}
+//                 onChange={handleChange}
+//               />
+//             </div>
+
+//             <div className="form-group">
+//               <label>Cover Image URL</label>
+
+//               <input
+//                 type="text"
+//                 name="coverImage"
+//                 value={formData.coverImage}
+//                 onChange={handleChange}
+//               />
+//             </div>
+
+//             <div className="form-actions">
+
+//               <button
+//                 type="submit"
+//                 className="primary-button"
+//                 disabled={saving}
+//               >
+//                 {saving
+//                   ? "Saving..."
+//                   : "Save Changes"}
+//               </button>
+
+//               <button
+//                 type="button"
+//                 className="secondary-button"
+//                 onClick={() =>
+//                   navigate("/dashboard")
+//                 }
+//               >
+//                 Cancel
+//               </button>
+
+//             </div>
+
+//           </form>
+
+//         </div>
+
+//       </main>
+
+//     </div>
+//   );
+// }
+
+// export default EditTrip;
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -268,7 +522,7 @@ function EditTrip() {
     startDate: "",
     endDate: "",
     description: "",
-    coverImage: "",
+    rating: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -276,14 +530,13 @@ function EditTrip() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  // Get existing trip
   useEffect(() => {
     const getTrip = async () => {
       try {
-        const response = await API.get("/trips");
+        const response = await API.get(`/trips/${id}`);
 
-        const trip = response.data.trips.find(
-          (item) => item._id === id
-        );
+        const trip = response.data.trip;
 
         if (!trip) {
           setError("Trip not found");
@@ -293,17 +546,23 @@ function EditTrip() {
         setFormData({
           title: trip.title || "",
           destination: trip.destination || "",
+
           startDate: trip.startDate
             ? trip.startDate.substring(0, 10)
             : "",
+
           endDate: trip.endDate
             ? trip.endDate.substring(0, 10)
             : "",
+
           description: trip.description || "",
-          coverImage: trip.coverImage || "",
+
+          rating: trip.rating
+            ? String(trip.rating)
+            : "",
         });
       } catch (error) {
-        console.error(error);
+        console.error("Get Trip Error:", error);
 
         setError(
           error.response?.data?.message ||
@@ -317,6 +576,8 @@ function EditTrip() {
     getTrip();
   }, [id]);
 
+
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -324,6 +585,8 @@ function EditTrip() {
     });
   };
 
+
+  // Update trip
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -332,9 +595,21 @@ function EditTrip() {
     setSaving(true);
 
     try {
+      const dataToSend = {
+        title: formData.title,
+        destination: formData.destination,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        description: formData.description,
+
+        rating: formData.rating
+          ? Number(formData.rating)
+          : undefined,
+      };
+
       const response = await API.put(
         `/trips/${id}`,
-        formData
+        dataToSend
       );
 
       setMessage(response.data.message);
@@ -342,8 +617,9 @@ function EditTrip() {
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
+
     } catch (error) {
-      console.error(error);
+      console.error("Update Trip Error:", error);
 
       setError(
         error.response?.data?.message ||
@@ -354,6 +630,8 @@ function EditTrip() {
     }
   };
 
+
+  // Loading
   if (loading) {
     return (
       <div className="loading">
@@ -362,6 +640,7 @@ function EditTrip() {
     );
   }
 
+
   return (
     <div className="trip-form-page">
 
@@ -369,6 +648,7 @@ function EditTrip() {
 
       <main className="trip-form-container">
 
+        {/* Header */}
         <div className="trip-form-header">
 
           <p className="small-heading">
@@ -381,50 +661,74 @@ function EditTrip() {
 
         </div>
 
+
+        {/* Form Card */}
         <div className="trip-form-card">
 
+          {/* Error */}
           {error && (
             <div className="error-message">
               {error}
             </div>
           )}
 
+
+          {/* Success */}
           {message && (
             <div className="success-message">
               {message}
             </div>
           )}
 
+
           <form onSubmit={handleSubmit}>
 
+            {/* Title */}
             <div className="form-group">
-              <label>Trip Title</label>
+
+              <label>
+                Trip Title
+              </label>
 
               <input
                 type="text"
                 name="title"
+                placeholder="e.g. My Goa Adventure"
                 value={formData.title}
                 onChange={handleChange}
                 required
               />
+
             </div>
 
+
+            {/* Destination */}
             <div className="form-group">
-              <label>Destination</label>
+
+              <label>
+                Destination
+              </label>
 
               <input
                 type="text"
                 name="destination"
+                placeholder="e.g. Goa, India"
                 value={formData.destination}
                 onChange={handleChange}
                 required
               />
+
             </div>
 
+
+            {/* Dates */}
             <div className="date-row">
 
               <div className="form-group">
-                <label>Start Date</label>
+
+                <label>
+                  Start Date
+                </label>
 
                 <input
                   type="date"
@@ -433,10 +737,15 @@ function EditTrip() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
 
+
               <div className="form-group">
-                <label>End Date</label>
+
+                <label>
+                  End Date
+                </label>
 
                 <input
                   type="date"
@@ -445,31 +754,72 @@ function EditTrip() {
                   onChange={handleChange}
                   required
                 />
+
               </div>
 
             </div>
 
+
+            {/* Description */}
             <div className="form-group">
-              <label>Description</label>
+
+              <label>
+                Description
+              </label>
 
               <textarea
                 name="description"
+                placeholder="Write something about your trip..."
                 value={formData.description}
                 onChange={handleChange}
               />
+
             </div>
 
+
+            {/* Rating */}
             <div className="form-group">
-              <label>Cover Image URL</label>
 
-              <input
-                type="text"
-                name="coverImage"
-                value={formData.coverImage}
+              <label>
+                Rating
+              </label>
+
+              <select
+                name="rating"
+                value={formData.rating}
                 onChange={handleChange}
-              />
+              >
+
+                <option value="">
+                  Select Rating
+                </option>
+
+                <option value="1">
+                  ⭐ 1
+                </option>
+
+                <option value="2">
+                  ⭐⭐ 2
+                </option>
+
+                <option value="3">
+                  ⭐⭐⭐ 3
+                </option>
+
+                <option value="4">
+                  ⭐⭐⭐⭐ 4
+                </option>
+
+                <option value="5">
+                  ⭐⭐⭐⭐⭐ 5
+                </option>
+
+              </select>
+
             </div>
 
+
+            {/* Buttons */}
             <div className="form-actions">
 
               <button
@@ -481,6 +831,7 @@ function EditTrip() {
                   ? "Saving..."
                   : "Save Changes"}
               </button>
+
 
               <button
                 type="button"
