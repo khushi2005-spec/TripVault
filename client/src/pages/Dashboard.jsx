@@ -1162,9 +1162,634 @@
 
 // export default Dashboard;
 
+// import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+
+// import API from "../services/api";
+// import Navbar from "../components/Navbar";
+
+// function Dashboard() {
+//   const navigate = useNavigate();
+
+//   const [user, setUser] = useState(null);
+//   const [trips, setTrips] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [deletingId, setDeletingId] = useState(null);
+
+//   useEffect(() => {
+//     const getDashboardData = async () => {
+//       try {
+//         // Get logged-in user
+//         const userResponse = await API.get("/auth/me");
+
+//         setUser(userResponse.data.user);
+
+//         // Get user's trips
+//         const tripsResponse = await API.get("/trips");
+
+//         setTrips(tripsResponse.data.trips);
+//       } catch (error) {
+//         console.error("Dashboard error:", error);
+
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("user");
+
+//         navigate("/login");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     getDashboardData();
+//   }, [navigate]);
+
+//   // Delete Trip
+//   const handleDeleteTrip = async (tripId) => {
+//     const confirmDelete = window.confirm(
+//       "Are you sure you want to delete this trip?"
+//     );
+
+//     if (!confirmDelete) {
+//       return;
+//     }
+
+//     try {
+//       setDeletingId(tripId);
+
+//       await API.delete(`/trips/${tripId}`);
+
+//       // Remove deleted trip from UI
+//       setTrips((prevTrips) =>
+//         prevTrips.filter((trip) => trip._id !== tripId)
+//       );
+//     } catch (error) {
+//       console.error("Delete trip error:", error);
+
+//       alert(
+//         error.response?.data?.message ||
+//           "Failed to delete trip"
+//       );
+//     } finally {
+//       setDeletingId(null);
+//     }
+//   };
+
+//   // Loading screen
+//   if (loading) {
+//     return (
+//       <div className="loading">
+//         Loading your memories...
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="dashboard">
+//       <Navbar />
+
+//       <main className="dashboard-content">
+
+//         {/* Welcome Section */}
+//         <section className="welcome-card">
+//           <div className="travel-icon">
+//             ✈️
+//           </div>
+
+//           <p className="small-heading">
+//             WELCOME TO TRIPVAULT
+//           </p>
+
+//           <h1>
+//             Hello, {user?.name}!
+//           </h1>
+
+//           <p>
+//             Your travel memory journey starts here.
+//           </p>
+
+//           <div className="user-info">
+
+//             <div>
+//               <span>Name</span>
+
+//               <strong>
+//                 {user?.name}
+//               </strong>
+//             </div>
+
+//             <div>
+//               <span>Email</span>
+
+//               <strong>
+//                 {user?.email}
+//               </strong>
+//             </div>
+
+//           </div>
+//         </section>
+
+
+//         {/* Trips Section */}
+//         <section>
+
+//           <div className="trips-header">
+
+//             <div>
+//               <p className="small-heading">
+//                 YOUR JOURNEY
+//               </p>
+
+//               <h2>
+//                 Travel Memories
+//               </h2>
+//             </div>
+
+//             <button
+//               className="create-button"
+//               onClick={() => navigate("/create-trip")}
+//             >
+//               + Create Trip
+//             </button>
+
+//           </div>
+
+
+//           {/* Empty State */}
+//           {trips.length === 0 && (
+//             <div className="empty-state">
+
+//               <div>
+//                 ✈️
+//               </div>
+
+//               <h2>
+//                 Your memories are waiting
+//               </h2>
+
+//               <p>
+//                 You haven't created any trips yet.
+//               </p>
+
+//               <button
+//                 onClick={() =>
+//                   navigate("/create-trip")
+//                 }
+//               >
+//                 Create Your First Trip
+//               </button>
+
+//             </div>
+//           )}
+
+
+//           {/* Trip Cards */}
+//           {trips.length > 0 && (
+//             <div className="trip-grid">
+
+//               {trips.map((trip) => (
+
+//                 <div
+//                   className="trip-card"
+//                   key={trip._id}
+//                 >
+
+//                   {/* Trip Image Placeholder */}
+//                   <div className="trip-image-placeholder">
+//                     ✈️
+//                   </div>
+
+
+//                   <div className="trip-card-content">
+
+//                     {/* Title */}
+//                     <h3>
+//                       {trip.title}
+//                     </h3>
+
+
+//                     {/* Destination */}
+//                     <p>
+//                       📍 {trip.destination}
+//                     </p>
+
+
+//                     {/* Dates */}
+//                     <p>
+//                       📅{" "}
+//                       {trip.startDate
+//                         ? new Date(
+//                             trip.startDate
+//                           ).toLocaleDateString()
+//                         : "N/A"}
+
+//                       {" - "}
+
+//                       {trip.endDate
+//                         ? new Date(
+//                             trip.endDate
+//                           ).toLocaleDateString()
+//                         : "N/A"}
+//                     </p>
+
+
+//                     {/* Rating */}
+//                     {trip.rating && (
+//                       <p>
+//                         ⭐ Rating: {trip.rating}/5
+//                       </p>
+//                     )}
+
+
+//                     {/* Description */}
+//                     {trip.description && (
+//                       <p>
+//                         {trip.description}
+//                       </p>
+//                     )}
+
+
+//                     {/* Actions */}
+//                     <div className="trip-actions">
+
+//                       <button
+//                         className="edit-button"
+//                         onClick={() =>
+//                           navigate(
+//                             `/edit-trip/${trip._id}`
+//                           )
+//                         }
+//                       >
+//                         Edit
+//                       </button>
+
+
+//                       <button
+//                         className="delete-button"
+//                         onClick={() =>
+//                           handleDeleteTrip(
+//                             trip._id
+//                           )
+//                         }
+//                         disabled={
+//                           deletingId === trip._id
+//                         }
+//                       >
+//                         {deletingId === trip._id
+//                           ? "Deleting..."
+//                           : "Delete"}
+//                       </button>
+
+//                     </div>
+
+//                   </div>
+
+//                 </div>
+
+//               ))}
+
+//             </div>
+//           )}
+
+//         </section>
+
+//       </main>
+//     </div>
+//   );
+// }
+
+// export default Dashboard;
+
+// import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import API from "../services/api";
+// import Navbar from "../components/Navbar";
+
+// function Dashboard() {
+//   const navigate = useNavigate();
+
+//   const [user, setUser] = useState(null);
+//   const [trips, setTrips] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [deletingId, setDeletingId] = useState(null);
+
+//   useEffect(() => {
+//     const getDashboardData = async () => {
+//       try {
+//         // Get logged-in user
+//         const userResponse = await API.get("/auth/me");
+//         setUser(userResponse.data.user);
+
+//         // Get user's trips
+//         const tripsResponse = await API.get("/trips");
+//         setTrips(tripsResponse.data.trips);
+//       } catch (error) {
+//         console.error("Dashboard error:", error);
+
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("user");
+
+//         navigate("/login");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     getDashboardData();
+//   }, [navigate]);
+
+//   // Delete Trip
+//   const handleDeleteTrip = async (tripId) => {
+//     const confirmDelete = window.confirm(
+//       "Are you sure you want to delete this trip?"
+//     );
+
+//     if (!confirmDelete) {
+//       return;
+//     }
+
+//     try {
+//       setDeletingId(tripId);
+
+//       await API.delete(`/trips/${tripId}`);
+
+//       // Remove deleted trip from UI
+//       setTrips((prevTrips) =>
+//         prevTrips.filter((trip) => trip._id !== tripId)
+//       );
+//     } catch (error) {
+//       console.error("Delete trip error:", error);
+
+//       alert(
+//         error.response?.data?.message ||
+//           "Failed to delete trip"
+//       );
+//     } finally {
+//       setDeletingId(null);
+//     }
+//   };
+
+//   // Loading screen
+//   if (loading) {
+//     return (
+//       <div className="loading">
+//         Loading your memories...
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="dashboard">
+//       <Navbar />
+
+//       <main className="dashboard-content">
+
+//         {/* Welcome Section */}
+//         <section className="welcome-card">
+//           <div className="travel-icon">
+//             ✈️
+//           </div>
+
+//           <p className="small-heading">
+//             WELCOME TO TRIPVAULT
+//           </p>
+
+//           <h1>
+//             Hello, {user?.name}!
+//           </h1>
+
+//           <p>
+//             Your travel memory journey starts here.
+//           </p>
+
+//           <div className="user-info">
+//             <div>
+//               <span>Name</span>
+
+//               <strong>
+//                 {user?.name}
+//               </strong>
+//             </div>
+
+//             <div>
+//               <span>Email</span>
+
+//               <strong>
+//                 {user?.email}
+//               </strong>
+//             </div>
+//           </div>
+//         </section>
+
+//         {/* Trips Section */}
+//         <section>
+//           <div className="trips-header">
+
+//             <div>
+//               <p className="small-heading">
+//                 YOUR JOURNEY
+//               </p>
+
+//               <h2>
+//                 Travel Memories
+//               </h2>
+//             </div>
+
+//             <button
+//               className="create-button"
+//               onClick={() => navigate("/create-trip")}
+//             >
+//               + Create Trip
+//             </button>
+
+//           </div>
+
+//           <div className="trip-actions">
+
+//   <button
+//     className="view-button"
+//     onClick={() =>
+//       navigate(`/trip/${trip._id}`)
+//     }
+//   >
+//     View Details
+//   </button>
+
+//   <button
+//     className="edit-button"
+//     onClick={() =>
+//       navigate(
+//         `/edit-trip/${trip._id}`
+//       )
+//     }
+//   >
+//     Edit
+//   </button>
+
+//   <button
+//     className="delete-button"
+//     onClick={() =>
+//       handleDeleteTrip(
+//         trip._id
+//       )
+//     }
+//     disabled={
+//       deletingId === trip._id
+//     }
+//   >
+//     {deletingId === trip._id
+//       ? "Deleting..."
+//       : "Delete"}
+//   </button>
+
+// </div>
+
+//           {/* Empty State */}
+//           {trips.length === 0 && (
+//             <div className="empty-state">
+
+//               <div>
+//                 ✈️
+//               </div>
+
+//               <h2>
+//                 Your memories are waiting
+//               </h2>
+
+//               <p>
+//                 You haven't created any trips yet.
+//               </p>
+
+//               <button
+//                 onClick={() =>
+//                   navigate("/create-trip")
+//                 }
+//               >
+//                 Create Your First Trip
+//               </button>
+
+//             </div>
+//           )}
+
+//           {/* Trip Cards */}
+//           {trips.length > 0 && (
+//             <div className="trip-grid">
+
+//               {trips.map((trip) => (
+
+//                 <div
+//                   className="trip-card"
+//                   key={trip._id}
+//                 >
+
+//                   {/* Trip Image */}
+//                   {trip.coverImage ? (
+//                     <img
+//                       src={trip.coverImage}
+//                       alt={trip.title}
+//                       className="trip-image"
+//                     />
+//                   ) : (
+//                     <div className="trip-image-placeholder">
+//                       ✈️
+//                     </div>
+//                   )}
+
+//                   <div className="trip-card-content">
+
+//                     {/* Title */}
+//                     <h3>
+//                       {trip.title}
+//                     </h3>
+
+//                     {/* Destination */}
+//                     <p>
+//                       📍 {trip.destination}
+//                     </p>
+
+//                     {/* Dates */}
+//                     <p>
+//                       📅{" "}
+//                       {trip.startDate
+//                         ? new Date(
+//                             trip.startDate
+//                           ).toLocaleDateString()
+//                         : "N/A"}
+
+//                       {" - "}
+
+//                       {trip.endDate
+//                         ? new Date(
+//                             trip.endDate
+//                           ).toLocaleDateString()
+//                         : "N/A"}
+//                     </p>
+
+//                     {/* Rating */}
+//                     {trip.rating && (
+//                       <p>
+//                         ⭐ Rating: {trip.rating}/5
+//                       </p>
+//                     )}
+
+//                     {/* Description */}
+//                     {trip.description && (
+//                       <p>
+//                         {trip.description}
+//                       </p>
+//                     )}
+
+//                     {/* Actions */}
+//                     <div className="trip-actions">
+
+//                       <button
+//                         className="edit-button"
+//                         onClick={() =>
+//                           navigate(
+//                             `/edit-trip/${trip._id}`
+//                           )
+//                         }
+//                       >
+//                         Edit
+//                       </button>
+
+//                       <button
+//                         className="delete-button"
+//                         onClick={() =>
+//                           handleDeleteTrip(
+//                             trip._id
+//                           )
+//                         }
+//                         disabled={
+//                           deletingId === trip._id
+//                         }
+//                       >
+//                         {deletingId === trip._id
+//                           ? "Deleting..."
+//                           : "Delete"}
+//                       </button>
+
+//                     </div>
+
+//                   </div>
+
+//                 </div>
+
+//               ))}
+
+//             </div>
+//           )}
+
+//         </section>
+
+//       </main>
+//     </div>
+//   );
+// }
+
+// export default Dashboard;
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 
@@ -1181,12 +1806,10 @@ function Dashboard() {
       try {
         // Get logged-in user
         const userResponse = await API.get("/auth/me");
-
         setUser(userResponse.data.user);
 
         // Get user's trips
         const tripsResponse = await API.get("/trips");
-
         setTrips(tripsResponse.data.trips);
       } catch (error) {
         console.error("Dashboard error:", error);
@@ -1251,6 +1874,7 @@ function Dashboard() {
 
         {/* Welcome Section */}
         <section className="welcome-card">
+
           <div className="travel-icon">
             ✈️
           </div>
@@ -1271,7 +1895,6 @@ function Dashboard() {
 
             <div>
               <span>Name</span>
-
               <strong>
                 {user?.name}
               </strong>
@@ -1279,15 +1902,14 @@ function Dashboard() {
 
             <div>
               <span>Email</span>
-
               <strong>
                 {user?.email}
               </strong>
             </div>
 
           </div>
-        </section>
 
+        </section>
 
         {/* Trips Section */}
         <section>
@@ -1306,13 +1928,14 @@ function Dashboard() {
 
             <button
               className="create-button"
-              onClick={() => navigate("/create-trip")}
+              onClick={() =>
+                navigate("/create-trip")
+              }
             >
               + Create Trip
             </button>
 
           </div>
-
 
           {/* Empty State */}
           {trips.length === 0 && (
@@ -1341,7 +1964,6 @@ function Dashboard() {
             </div>
           )}
 
-
           {/* Trip Cards */}
           {trips.length > 0 && (
             <div className="trip-grid">
@@ -1353,11 +1975,18 @@ function Dashboard() {
                   key={trip._id}
                 >
 
-                  {/* Trip Image Placeholder */}
-                  <div className="trip-image-placeholder">
-                    ✈️
-                  </div>
-
+                  {/* Trip Image */}
+                  {trip.coverImage ? (
+                    <img
+                      src={trip.coverImage}
+                      alt={trip.title}
+                      className="trip-image"
+                    />
+                  ) : (
+                    <div className="trip-image-placeholder">
+                      ✈️
+                    </div>
+                  )}
 
                   <div className="trip-card-content">
 
@@ -1366,12 +1995,10 @@ function Dashboard() {
                       {trip.title}
                     </h3>
 
-
                     {/* Destination */}
                     <p>
                       📍 {trip.destination}
                     </p>
-
 
                     {/* Dates */}
                     <p>
@@ -1391,14 +2018,12 @@ function Dashboard() {
                         : "N/A"}
                     </p>
 
-
                     {/* Rating */}
                     {trip.rating && (
                       <p>
                         ⭐ Rating: {trip.rating}/5
                       </p>
                     )}
-
 
                     {/* Description */}
                     {trip.description && (
@@ -1407,10 +2032,22 @@ function Dashboard() {
                       </p>
                     )}
 
-
                     {/* Actions */}
                     <div className="trip-actions">
 
+                      {/* View Details */}
+                      <button
+                        className="view-button"
+                        onClick={() =>
+                          navigate(
+                            `/trip/${trip._id}`
+                          )
+                        }
+                      >
+                        View Details
+                      </button>
+
+                      {/* Edit */}
                       <button
                         className="edit-button"
                         onClick={() =>
@@ -1422,7 +2059,7 @@ function Dashboard() {
                         Edit
                       </button>
 
-
+                      {/* Delete */}
                       <button
                         className="delete-button"
                         onClick={() =>

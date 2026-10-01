@@ -119,6 +119,211 @@
 
 // export default App;
 
+// import {
+//   BrowserRouter,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
+
+// import Login from "./pages/Login";
+// import Register from "./pages/Register";
+// import Dashboard from "./pages/Dashboard";
+// import CreateTrip from "./pages/CreateTrip";
+// import EditTrip from "./pages/EditTrip";
+// import TripDetail from "./pages/TripDetail";
+// import Profile from "./pages/Profile";
+
+// import ProtectedRoute from "./components/ProtectedRoute";
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+
+//       <Routes>
+
+//         {/* Default Page */}
+//         <Route
+//           path="/"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+
+//         {/* Public Pages */}
+
+//         <Route
+//           path="/login"
+//           element={<Login />}
+//         />
+
+//         <Route
+//           path="/register"
+//           element={<Register />}
+//         />
+
+//         {/* Public Profile */}
+// <Route
+//   path="/profile/:username"
+//   element={<Profile />}
+// />
+
+
+
+
+//         {/* Protected Pages */}
+
+//         <Route element={<ProtectedRoute />}>
+
+//           {/* Dashboard */}
+//           <Route
+//             path="/dashboard"
+//             element={<Dashboard />}
+//           />
+
+
+//           {/* Create Trip */}
+//           <Route
+//             path="/create-trip"
+//             element={<CreateTrip />}
+//           />
+
+
+//           {/* Edit Trip */}
+//           <Route
+//             path="/edit-trip/:id"
+//             element={<EditTrip />}
+//           />
+
+//         </Route>
+        
+//         {/* Trip Detail */}
+// <Route
+//   path="/trip/:id"
+//   element={<TripDetail />}
+// />
+
+
+//         {/* Invalid URL */}
+//         <Route
+//           path="*"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+//       </Routes>
+
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
+
+// import {
+//   BrowserRouter,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
+
+// import Login from "./pages/Login";
+// import Register from "./pages/Register";
+// import Dashboard from "./pages/Dashboard";
+// import CreateTrip from "./pages/CreateTrip";
+// import EditTrip from "./pages/EditTrip";
+// import TripDetail from "./pages/TripDetail";
+// import Profile from "./pages/Profile";
+// import ProtectedRoute from "./components/ProtectedRoute";
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+
+//         {/* Default Page */}
+//         <Route
+//           path="/"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+//         {/* Public Pages */}
+
+//         <Route
+//           path="/login"
+//           element={<Login />}
+//         />
+
+//         <Route
+//           path="/register"
+//           element={<Register />}
+//         />
+
+//         {/* Public Profile */}
+//         <Route
+//           path="/profile/:username"
+//           element={<Profile />}
+//         />
+
+//         {/* Protected Pages */}
+//         <Route element={<ProtectedRoute />}>
+
+//           {/* Dashboard */}
+//           <Route
+//             path="/dashboard"
+//             element={<Dashboard />}
+//           />
+
+//           {/* Create Trip */}
+//           <Route
+//             path="/create-trip"
+//             element={<CreateTrip />}
+//           />
+
+//           {/* Edit Trip */}
+//           <Route
+//             path="/edit-trip/:id"
+//             element={<EditTrip />}
+//           />
+
+//           {/* Trip Detail */}
+//           <Route
+//             path="/trip/:id"
+//             element={<TripDetail />}
+//           />
+
+//         </Route>
+
+//         {/* Invalid URL */}
+//         <Route
+//           path="*"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
+
 import {
   BrowserRouter,
   Routes,
@@ -131,13 +336,14 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CreateTrip from "./pages/CreateTrip";
 import EditTrip from "./pages/EditTrip";
-
+import TripDetail from "./pages/TripDetail";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
 
         {/* Default Page */}
@@ -151,7 +357,6 @@ function App() {
           }
         />
 
-
         {/* Public Pages */}
 
         <Route
@@ -164,9 +369,13 @@ function App() {
           element={<Register />}
         />
 
+        {/* Public Profile */}
+        <Route
+          path="/profile/:username"
+          element={<Profile />}
+        />
 
         {/* Protected Pages */}
-
         <Route element={<ProtectedRoute />}>
 
           {/* Dashboard */}
@@ -175,13 +384,11 @@ function App() {
             element={<Dashboard />}
           />
 
-
           {/* Create Trip */}
           <Route
             path="/create-trip"
             element={<CreateTrip />}
           />
-
 
           {/* Edit Trip */}
           <Route
@@ -189,8 +396,19 @@ function App() {
             element={<EditTrip />}
           />
 
-        </Route>
+          {/* Trip Detail */}
+          <Route
+            path="/trip/:id"
+            element={<TripDetail />}
+          />
 
+          {/* Edit Profile */}
+          <Route
+            path="/edit-profile"
+            element={<EditProfile />}
+          />
+
+        </Route>
 
         {/* Invalid URL */}
         <Route
@@ -204,7 +422,6 @@ function App() {
         />
 
       </Routes>
-
     </BrowserRouter>
   );
 }

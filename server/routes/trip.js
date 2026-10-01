@@ -378,6 +378,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Trip = require("../models/Trip");
 const authMiddleware = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 const router = express.Router();
 
@@ -623,5 +624,66 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+router.post(
+  "/:id/upload",
+  authMiddleware,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check whether trip ID is valid
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          message: "Invalid trip ID",
+        });
+      }
+
+      // Check whether an image was uploaded
+      if (!req.file) {
+        return res.status(400).json({
+          message: "No image uploaded",
+        });
+      }
+
+      // Find trip and verify ownership
+      const trip = await Trip.findOne({
+        _id: id,
+        user: req.user.userId,
+      });
+
+      if (!trip) {
+        return res.status(404).json({
+          message: "Trip not found or you are not the owner",
+        });
+      }
+
+      // Cloudinary URL
+      const imageUrl = req.file.path;
+
+      // First uploaded image becomes cover image
+      if (!trip.coverImage) {
+        trip.coverImage = imageUrl;
+      }
+
+      // Add image to photos array
+      trip.photos.push(imageUrl);
+
+      await trip.save();
+
+      res.status(200).json({
+        message: "Photo uploaded successfully",
+        trip,
+      });
+    } catch (error) {
+      console.error("Upload Photo Error:", error);
+
+      res.status(500).json({
+        message: "Server error",
+        error: error.message,
+      });
+    }
+  }
+);
 
 module.exports = router;
