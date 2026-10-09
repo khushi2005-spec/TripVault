@@ -223,8 +223,158 @@
 
 // export default Register;
 
+// import { useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+
+// import API from "../services/api";
+
+// function Register() {
+//   const navigate = useNavigate();
+
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     email: "",
+//     password: "",
+//   });
+
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   const handleChange = (e) => {
+//     setFormData({
+//       ...formData,
+//       [e.target.name]: e.target.value,
+//     });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     setError("");
+//     setLoading(true);
+
+//     try {
+//       await API.post(
+//         "/auth/register",
+//         formData
+//       );
+
+//       navigate("/login");
+//     } catch (error) {
+//       console.error(
+//         "Registration error:",
+//         error
+//       );
+
+//       setError(
+//         error.response?.data?.message ||
+//           "Registration failed"
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="auth-page">
+
+//       <div className="auth-card">
+
+//         <div className="logo">
+//           Trip<span>Vault</span>
+//         </div>
+
+//         <p className="auth-subtitle">
+//           Create your account and start saving memories.
+//         </p>
+
+//         {error && (
+//           <div className="error-message">
+//             {error}
+//           </div>
+//         )}
+
+//         <form onSubmit={handleSubmit}>
+
+//           <div className="form-group">
+
+//             <label>Full Name</label>
+
+//             <input
+//               type="text"
+//               name="name"
+//               placeholder="Enter your name"
+//               value={formData.name}
+//               onChange={handleChange}
+//               required
+//             />
+
+//           </div>
+
+
+//           <div className="form-group">
+
+//             <label>Email Address</label>
+
+//             <input
+//               type="email"
+//               name="email"
+//               placeholder="Enter your email"
+//               value={formData.email}
+//               onChange={handleChange}
+//               required
+//             />
+
+//           </div>
+
+
+//           <div className="form-group">
+
+//             <label>Password</label>
+
+//             <input
+//               type="password"
+//               name="password"
+//               placeholder="Create a password"
+//               value={formData.password}
+//               onChange={handleChange}
+//               required
+//             />
+
+//           </div>
+
+
+//           <button
+//             type="submit"
+//             className="auth-button"
+//             disabled={loading}
+//           >
+//             {loading
+//               ? "Creating Account..."
+//               : "Create Account"}
+//           </button>
+
+//         </form>
+
+
+//         <p className="auth-link">
+//           Already have an account?{" "}
+//           <Link to="/login">
+//             Login
+//           </Link>
+//         </p>
+
+//       </div>
+
+//     </div>
+//   );
+// }
+
+// export default Register;
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import API from "../services/api";
 
@@ -254,22 +404,20 @@ function Register() {
     setLoading(true);
 
     try {
-      await API.post(
-        "/auth/register",
-        formData
-      );
+      await API.post("/auth/register", formData);
+
+      toast.success("Account created successfully!");
 
       navigate("/login");
-    } catch (error) {
-      console.error(
-        "Registration error:",
-        error
-      );
+    } catch (err) {
+      console.error("Registration error:", err);
 
-      setError(
-        error.response?.data?.message ||
-          "Registration failed"
-      );
+      const errorMessage =
+        err.response?.data?.message ||
+        "Registration failed. Please try again.";
+
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -277,9 +425,7 @@ function Register() {
 
   return (
     <div className="auth-page">
-
       <div className="auth-card">
-
         <div className="logo">
           Trip<span>Vault</span>
         </div>
@@ -289,83 +435,74 @@ function Register() {
         </p>
 
         {error && (
-          <div className="error-message">
+          <div className="error-message" role="alert">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-
           <div className="form-group">
-
-            <label>Full Name</label>
+            <label htmlFor="name">Full Name</label>
 
             <input
               type="text"
+              id="name"
               name="name"
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
+              autoComplete="name"
               required
+              disabled={loading}
             />
-
           </div>
 
-
           <div className="form-group">
-
-            <label>Email Address</label>
+            <label htmlFor="email">Email Address</label>
 
             <input
               type="email"
+              id="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              autoComplete="email"
               required
+              disabled={loading}
             />
-
           </div>
 
-
           <div className="form-group">
-
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
 
             <input
               type="password"
+              id="password"
               name="password"
               placeholder="Create a password"
               value={formData.password}
               onChange={handleChange}
+              autoComplete="new-password"
               required
+              disabled={loading}
             />
-
           </div>
-
 
           <button
             type="submit"
             className="auth-button"
             disabled={loading}
           >
-            {loading
-              ? "Creating Account..."
-              : "Create Account"}
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
-
         </form>
-
 
         <p className="auth-link">
           Already have an account?{" "}
-          <Link to="/login">
-            Login
-          </Link>
+          <Link to="/login">Login</Link>
         </p>
-
       </div>
-
     </div>
   );
 }

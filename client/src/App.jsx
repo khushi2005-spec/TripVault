@@ -324,6 +324,201 @@
 
 // export default App;
 
+// import {
+//   BrowserRouter,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
+
+// import Login from "./pages/Login";
+// import Register from "./pages/Register";
+// import Dashboard from "./pages/Dashboard";
+// import CreateTrip from "./pages/CreateTrip";
+// import EditTrip from "./pages/EditTrip";
+// import TripDetail from "./pages/TripDetail";
+// import Profile from "./pages/Profile";
+// import EditProfile from "./pages/EditProfile";
+// import ProtectedRoute from "./components/ProtectedRoute";
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+
+//         {/* Default Page */}
+//         <Route
+//           path="/"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+//         {/* Public Pages */}
+
+//         <Route
+//           path="/login"
+//           element={<Login />}
+//         />
+
+//         <Route
+//           path="/register"
+//           element={<Register />}
+//         />
+
+//         {/* Public Profile */}
+//         <Route
+//           path="/profile/:username"
+//           element={<Profile />}
+//         />
+
+//         {/* Protected Pages */}
+//         <Route element={<ProtectedRoute />}>
+
+//           {/* Dashboard */}
+//           <Route
+//             path="/dashboard"
+//             element={<Dashboard />}
+//           />
+
+//           {/* Create Trip */}
+//           <Route
+//             path="/create-trip"
+//             element={<CreateTrip />}
+//           />
+
+//           {/* Edit Trip */}
+//           <Route
+//             path="/edit-trip/:id"
+//             element={<EditTrip />}
+//           />
+
+//           {/* Trip Detail */}
+//           <Route
+//             path="/trip/:id"
+//             element={<TripDetail />}
+//           />
+
+//           {/* Edit Profile */}
+//           <Route
+//             path="/edit-profile"
+//             element={<EditProfile />}
+//           />
+
+//         </Route>
+
+//         {/* Invalid URL */}
+//         <Route
+//           path="*"
+//           element={
+//             <Navigate
+//               to="/login"
+//               replace
+//             />
+//           }
+//         />
+
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
+
+
+// import {
+//   BrowserRouter,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
+
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// import Login from "./pages/Login";
+// import Register from "./pages/Register";
+// import Dashboard from "./pages/Dashboard";
+// import CreateTrip from "./pages/CreateTrip";
+// import EditTrip from "./pages/EditTrip";
+// import TripDetail from "./pages/TripDetail";
+// import Profile from "./pages/Profile";
+// import EditProfile from "./pages/EditProfile";
+// import ProtectedRoute from "./components/ProtectedRoute";
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+//         <Route
+//           path="/"
+//           element={<Navigate to="/login" replace />}
+//         />
+
+//         <Route
+//           path="/login"
+//           element={<Login />}
+//         />
+
+//         <Route
+//           path="/register"
+//           element={<Register />}
+//         />
+
+//         <Route
+//           path="/profile/:username"
+//           element={<Profile />}
+//         />
+
+//         <Route element={<ProtectedRoute />}>
+//           <Route
+//             path="/dashboard"
+//             element={<Dashboard />}
+//           />
+
+//           <Route
+//             path="/create-trip"
+//             element={<CreateTrip />}
+//           />
+
+//           <Route
+//             path="/edit-trip/:id"
+//             element={<EditTrip />}
+//           />
+
+//           <Route
+//             path="/trip/:id"
+//             element={<TripDetail />}
+//           />
+
+//           <Route
+//             path="/edit-profile"
+//             element={<EditProfile />}
+//           />
+//         </Route>
+
+//         <Route
+//           path="*"
+//           element={<Navigate to="/login" replace />}
+//         />
+//       </Routes>
+
+//       <ToastContainer
+//         position="top-right"
+//         autoClose={3000}
+//         newestOnTop
+//         closeOnClick
+//         pauseOnHover
+//       />
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
+
 import {
   BrowserRouter,
   Routes,
@@ -331,6 +526,10 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Page imports
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -339,26 +538,22 @@ import EditTrip from "./pages/EditTrip";
 import TripDetail from "./pages/TripDetail";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+
+// Component imports
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* Default Page */}
+        {/* Redirect the home page to login */}
         <Route
           path="/"
-          element={
-            <Navigate
-              to="/login"
-              replace
-            />
-          }
+          element={<Navigate to="/login" replace />}
         />
 
-        {/* Public Pages */}
-
+        {/* Authentication routes */}
         <Route
           path="/login"
           element={<Login />}
@@ -369,59 +564,58 @@ function App() {
           element={<Register />}
         />
 
-        {/* Public Profile */}
+        {/* Public profile route */}
         <Route
           path="/profile/:username"
           element={<Profile />}
         />
 
-        {/* Protected Pages */}
+        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-
-          {/* Dashboard */}
           <Route
             path="/dashboard"
             element={<Dashboard />}
           />
 
-          {/* Create Trip */}
           <Route
             path="/create-trip"
             element={<CreateTrip />}
           />
 
-          {/* Edit Trip */}
           <Route
             path="/edit-trip/:id"
             element={<EditTrip />}
           />
 
-          {/* Trip Detail */}
           <Route
             path="/trip/:id"
             element={<TripDetail />}
           />
 
-          {/* Edit Profile */}
           <Route
             path="/edit-profile"
             element={<EditProfile />}
           />
-
         </Route>
 
-        {/* Invalid URL */}
+        {/* Redirect unknown routes to login */}
         <Route
           path="*"
-          element={
-            <Navigate
-              to="/login"
-              replace
-            />
-          }
+          element={<Navigate to="/login" replace />}
         />
-
       </Routes>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Toast notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
     </BrowserRouter>
   );
 }

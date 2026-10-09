@@ -76,6 +76,48 @@
 //     console.error("MongoDB connection failed:", error);
 //   });
 
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const cors = require("cors");
+// const dotenv = require("dotenv");
+
+// dotenv.config();
+
+// const authRoutes = require("./routes/auth");
+// const tripRoutes = require("./routes/trip");
+// const userRoutes = require("./routes/user");
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// app.use("/api/auth", authRoutes);
+// app.use("/api/trips", tripRoutes);
+// app.use("/api/users", userRoutes);
+
+// app.get("/", (req, res) => {
+//   res.json({
+//     message: "TripVault backend is running",
+//   });
+// });
+
+// const PORT = process.env.PORT || 5000;
+
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => {
+//     console.log("MongoDB connected successfully");
+
+//     app.listen(PORT, () => {
+//       console.log(`Server running on port ${PORT}`);
+//     });
+//   })
+//   .catch((error) => {
+//     console.error("MongoDB connection failed:", error);
+//   });
+
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -89,30 +131,51 @@ const userRoutes = require("./routes/user");
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/users", userRoutes);
 
+// Backend health check
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
+    success: true,
     message: "TripVault backend is running",
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// Health check for deployment platforms
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "TripVault server is healthy",
+  });
+});
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error("MONGO_URI is missing from environment variables.");
+  process.exit(1);
+}
+
+async function startServer() {
+  try {
+    await mongoose.connect(MONGO_URI);
     console.log("MongoDB connected successfully");
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`TripVault server running on port ${PORT}`);
     });
-  })
-  .catch((error) => {
-    console.error("MongoDB connection failed:", error);
-  });
+  } catch (error) {
+    console.error("Failed to start TripVault backend:", error.message);
+    process.exit(1);
+  }
+}
+
+startServer();
