@@ -50,7 +50,7 @@
 // module.exports = router;
 
 const express = require("express");
-const User = require("../models/User");
+const User = require("../models/user");
 const Trip = require("../models/Trip");
 // const authMiddleware = require("../middleware/auth");
 const authMiddleware = require("../middleware/authMiddleware");
