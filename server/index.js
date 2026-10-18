@@ -195,8 +195,30 @@ const userRoutes = require("./routes/user");
 const app = express();
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+// app.use(express.json());
+
+ // Middleware
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://trip-vault-seven.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests without an Origin header, such as Thunder Client.
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
+
 app.use(express.json());
+
 
 // API routes
 app.use("/api/auth", authRoutes);
