@@ -18,12 +18,19 @@ const generateToken = (userId) => {
 // router.post("/register", async (requestAnimationFrame, res) => {
     router.post("/register", async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        if(!name || !email || !password) {
-            return res.status(400).json({
-                message: "Name, email and password are required",
-            });
-        }
+        console.log("REGISTER ROUTE HIT");
+        // const { name, email, password } = req.body;
+        const { name, username, email, password } = req.body;
+        // if(!name || !email || !password) {
+        //     return res.status(400).json({
+        //         message: "Name, email and password are required",
+        //     });
+        // }
+        if (!name?.trim() || !username?.trim() || !email?.trim() || !password) {
+    return res.status(400).json({
+        message: "Name, username, email and password are required",
+    });
+}
         if(name.trim().length < 2) {
             return res.status(400).json({
                 message: "Name must contain at least 2 characters",
@@ -34,27 +41,60 @@ const generateToken = (userId) => {
                 message: "Password must contain at least 6 characters",
             });
         }
+        // const normalizedEmail = email.trim().toLowerCase();
+        // const existingUser = await User.findOne({
+        //     email: normalizedEmail,
+        // });
         const normalizedEmail = email.trim().toLowerCase();
-        const existingUser = await User.findOne({
-            email: normalizedEmail,
-        });
-        if(existingUser){
-            return res.status(409).json({
-                message: "User already exists",
-            });
-        }
+        const normalizedUsername = username.trim().toLowerCase();
+        const existingEmail = await User.findOne({
+    email: normalizedEmail,
+});
+
+if (existingEmail) {
+    return res.status(409).json({
+        message: "An account with this email already exists",
+    });
+}
+
+if (!/^[a-z0-9_]{3,20}$/.test(normalizedUsername)) {
+    return res.status(400).json({
+        message: "Username must be 3–20 characters and contain only letters, numbers and underscores",
+    });
+}
+        // if(existingUser){
+        //     return res.status(409).json({
+        //         message: "User already exists",
+        //     });
+        // }
+        const existingUsername = await User.findOne({
+    username: normalizedUsername,
+});
+
+if (existingUsername) {
+    return res.status(409).json({
+        message: "Username is already taken",
+    });
+}
         const hashedPassword = await bcrypt.hash(password, 10);
+        // const user = await User.create({
+        //     name: name.trim(),
+        //     email: normalizedEmail,
+        //     password: hashedPassword,
+        // });
         const user = await User.create({
-            name: name.trim(),
-            email: normalizedEmail,
-            password: hashedPassword,
-        });
+    name: name.trim(),
+    username: normalizedUsername,
+    email: normalizedEmail,
+    password: hashedPassword,
+});
 
         res.status(201).json({
             message: "Registration successful",
             user: {
                 id: user._id,
                 name: user.name,
+                username: user.username,
                 email: user.email,
             },
         });

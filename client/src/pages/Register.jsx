@@ -383,6 +383,7 @@ function Register() {
 
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -456,6 +457,25 @@ function Register() {
               disabled={loading}
             />
           </div>
+          <div className="form-group">
+  <label htmlFor="username">Username</label>
+
+  <input
+    type="text"
+    id="username"
+    name="username"
+    placeholder="Choose a username"
+    value={formData.username}
+    onChange={handleChange}
+    autoComplete="username"
+    minLength={3}
+    maxLength={20}
+    pattern="[A-Za-z0-9_]+"
+    title="Use 3–20 letters, numbers, or underscores."
+    required
+    disabled={loading}
+  />
+</div>
 
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
