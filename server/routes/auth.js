@@ -226,11 +226,33 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
 
 const User = require("../models/user");
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: "Too many login attempts. Please try again in 15 minutes.",
+  },
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: "Too many registration attempts. Please try again later.",
+  },
+});
+
 
 // Validation helpers
 const isValidEmail = (email) => {
@@ -257,7 +279,8 @@ const generateToken = (userId) => {
 
 // REGISTER
 // POST /api/auth/register
-router.post("/register", async (req, res) => {
+// router.post("/register", async (req, res) => {
+  router.post("/register", registerLimiter, async (req, res) => {
   try {
     const { name, username, email, password } = req.body || {};
 
@@ -374,7 +397,8 @@ router.post("/register", async (req, res) => {
 
 // LOGIN
 // POST /api/auth/login
-router.post("/login", async (req, res) => {
+// router.post("/login", async (req, res) => {
+  router.post("/login", loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body || {};
 
