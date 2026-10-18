@@ -25,10 +25,16 @@
 
 // module.exports = upload;
 
-const cloudinary = require("cloudinary").v2;
+// const cloudinary = require("cloudinary").v2;
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+// const multer = require("multer");
+// const path = require("path");
+
+const cloudinary = require("../config/cloudinary");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const path = require("path");
+
 
 // Configure Cloudinary using environment variables.
 cloudinary.config({
