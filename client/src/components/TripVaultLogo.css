@@ -1,0 +1,55 @@
+
+.tripvault-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #171717;
+  text-decoration: none;
+}
+
+.tripvault-logo-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.tripvault-logo:hover .tripvault-logo-icon {
+  transform: translateY(-3px) rotate(-5deg);
+}
+
+.tripvault-logo-word {
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -1.4px;
+  line-height: 1;
+  color: #171717;
+}
+
+.tripvault-logo-word span {
+  color: #FF8500;
+}
+
+.tripvault-logo.logo-light .tripvault-logo-word {
+  color: #FFFFFF;
+}
+
+.tripvault-logo.logo-light .tripvault-logo-word span {
+  color: #FF8500;
+}
+
+.tripvault-logo.logo-compact .tripvault-logo-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.tripvault-logo.logo-compact .tripvault-logo-word {
+  font-size: 21px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tripvault-logo-icon {
+    transition: none;
+  }
+}

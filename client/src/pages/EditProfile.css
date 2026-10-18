@@ -1,0 +1,267 @@
+
+.edit-profile-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #172033;
+}
+
+.edit-profile-container {
+  width: min(760px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 54px 0 70px;
+}
+
+.edit-profile-heading {
+  margin-bottom: 28px;
+}
+
+.edit-profile-kicker {
+  color: #247f79;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.edit-profile-heading h1 {
+  margin: 12px 0 10px;
+  font-size: clamp(30px, 5vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -1.3px;
+}
+
+.edit-profile-heading > p {
+  max-width: 560px;
+  margin: 0;
+  color: #738094;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.edit-profile-card {
+  padding: 32px;
+  border: 1px solid #e5eaf0;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 40px rgba(25, 42, 70, 0.06);
+}
+
+.edit-profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.edit-profile-avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #dcefe9, #e8edf8);
+  color: #205b65;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.edit-profile-card-header h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.edit-profile-card-header p {
+  margin: 0;
+  color: #7b8797;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.edit-profile-field {
+  margin-bottom: 25px;
+}
+
+.edit-profile-field label {
+  display: block;
+  margin-bottom: 9px;
+  color: #26354a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.edit-profile-field input,
+.edit-profile-field textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid #dce3eb;
+  border-radius: 12px;
+  outline: none;
+  background: #fbfcfe;
+  color: #172033;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.edit-profile-field textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.edit-profile-field input:focus,
+.edit-profile-field textarea:focus {
+  border-color: #398b91;
+  box-shadow: 0 0 0 4px rgba(57, 139, 145, 0.12);
+  background: #fff;
+}
+
+.edit-profile-field small {
+  display: block;
+  margin-top: 8px;
+  color: #8490a0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.edit-profile-character-count {
+  margin-top: 7px;
+  color: #8490a0;
+  font-size: 12px;
+  text-align: right;
+}
+
+.edit-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.edit-profile-actions button {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.edit-profile-save {
+  background: #205b65;
+  color: #fff;
+}
+
+.edit-profile-save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #174650;
+}
+
+.edit-profile-cancel {
+  border: 1px solid #dce3eb !important;
+  background: #fff;
+  color: #536174;
+}
+
+.edit-profile-cancel:hover:not(:disabled) {
+  background: #f3f6f9;
+}
+
+.edit-profile-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.edit-profile-alert {
+  margin-bottom: 22px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.edit-profile-error {
+  border: 1px solid #f3d0d0;
+  background: #fff3f3;
+  color: #a52b2b;
+}
+
+.edit-profile-success {
+  border: 1px solid #cce9d8;
+  background: #effaf3;
+  color: #236b43;
+}
+
+.edit-profile-loading {
+  display: flex;
+  min-height: 60vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #738094;
+}
+
+.edit-profile-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #dce8e7;
+  border-top-color: #247f79;
+  border-radius: 50%;
+  animation: edit-profile-spin 700ms linear infinite;
+}
+
+@keyframes edit-profile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.edit-profile-note {
+  margin: 20px 0 0;
+  color: #8490a0;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .edit-profile-container {
+    padding-top: 32px;
+    padding-bottom: 44px;
+  }
+
+  .edit-profile-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .edit-profile-card-header {
+    align-items: flex-start;
+  }
+
+  .edit-profile-actions {
+    flex-direction: column;
+  }
+
+  .edit-profile-actions button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edit-profile-spinner {
+    animation: none;
+  }
+
+  .edit-profile-actions button {
+    transition: none;
+  }
+}
