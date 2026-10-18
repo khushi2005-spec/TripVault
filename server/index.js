@@ -181,9 +181,98 @@
 // startServer();
 
 
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const cors = require("cors");
+// const dotenv = require("dotenv");
+
+// dotenv.config();
+
+// const authRoutes = require("./routes/auth");
+// const tripRoutes = require("./routes/trip");
+// const userRoutes = require("./routes/user");
+
+// const app = express();
+
+// // Middleware
+// // app.use(cors());
+// // app.use(express.json());
+
+//  // Middleware
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://trip-vault-seven.vercel.app",
+// ];
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       // Allow requests without an Origin header, such as Thunder Client.
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+
+//       return callback(new Error("Not allowed by CORS"));
+//     },
+//   })
+// );
+
+// app.use(express.json());
+
+
+// // API routes
+// app.use("/api/auth", authRoutes);
+// app.use("/api/trips", tripRoutes);
+// app.use("/api/users", userRoutes);
+
+// // Backend health check
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "TripVault backend is running",
+//   });
+// });
+
+// // Health check for deployment platforms
+// app.get("/health", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "TripVault server is healthy",
+//   });
+// });
+
+// const PORT = process.env.PORT || 5000;
+// const MONGO_URI = process.env.MONGO_URI;
+
+// async function startServer() {
+//   if (!MONGO_URI) {
+//     throw new Error("MONGO_URI is missing from environment variables.");
+//   }
+
+//   await mongoose.connect(MONGO_URI);
+//   console.log("MongoDB connected successfully");
+
+//   app.listen(PORT, "0.0.0.0", () => {
+//     console.log(`TripVault server running on port ${PORT}`);
+//   });
+// }
+
+// // Start the server only when this file is run directly.
+// if (require.main === module) {
+//   startServer().catch((error) => {
+//     console.error("Failed to start TripVault backend:", error.message);
+//     process.exitCode = 1;
+//   });
+// }
+
+// // Export the app for automated tests.
+// module.exports = app;
+
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -194,11 +283,13 @@ const userRoutes = require("./routes/user");
 
 const app = express();
 
-// Middleware
-// app.use(cors());
-// app.use(express.json());
+// Security headers
+app.use(helmet());
 
- // Middleware
+// Hide the Express technology header
+app.disable("x-powered-by");
+
+// Allow only approved frontend origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://trip-vault-seven.vercel.app",
@@ -207,7 +298,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests without an Origin header, such as Thunder Client.
+      // Allow requests without an Origin header,
+      // such as server-to-server tools.
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
@@ -217,8 +309,8 @@ app.use(
   })
 );
 
-app.use(express.json());
-
+// Limit JSON request bodies to 100 KB
+app.use(express.json({ limit: "100kb" }));
 
 // API routes
 app.use("/api/auth", authRoutes);
@@ -233,7 +325,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check for deployment platforms
+// Deployment health check
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -257,7 +349,7 @@ async function startServer() {
   });
 }
 
-// Start the server only when this file is run directly.
+// Start the server only when this file is run directly
 if (require.main === module) {
   startServer().catch((error) => {
     console.error("Failed to start TripVault backend:", error.message);
@@ -265,5 +357,5 @@ if (require.main === module) {
   });
 }
 
-// Export the app for automated tests.
+// Export the app for automated tests
 module.exports = app;
