@@ -1681,7 +1681,7 @@ Users can create an account, log in, create, view, edit, and delete trips, uploa
 
 ## 🌐 Live Demo
 
-**Live Website:** [Open TripVault](https://trip-vault-4cfx1ngca-khushigodara2005-gmailcoms-projects.vercel.app/login)
+**Live Website:** [Open TripVault](https://trip-vault-seven.vercel.app/)
 
 **Frontend Deployment:** Vercel
 
