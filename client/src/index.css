@@ -3505,3 +3505,251 @@ Vault - Gold
 .dashboard .welcome-card .user-info span {
   color: #66768A;
 }
+
+
+/* Sky-blue styling for TripVault trip cards */
+/* .trip-card {
+  background-color: #D9EAF8;
+  border: 1px solid #B5D4ED;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(32, 77, 115, 0.08);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(32, 77, 115, 0.15);
+}
+
+.trip-card-content {
+  background-color: #D9EAF8;
+  color: #386B8E;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #204D73;
+}
+
+.trip-card-content p {
+  color: #386B8E;
+  line-height: 1.6;
+}
+
+.trip-image-placeholder {
+  background-color: #C2DFF4;
+  color: #285D89;
+}  */
+
+
+/* Trip cards matching the Create Trip button */
+/* .trip-card {
+  background-color: #4b90d6;
+  border: 1px solid #4b90d6;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+.trip-card-content {
+  background-color: #4b90d6;
+  color: #123B3B;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #123B3B;
+}
+
+.trip-card-content p {
+  color: #123B3B;
+  line-height: 1.6;
+}
+
+.trip-image-placeholder {
+  background-color: #18BFAE;
+  color: #FFFFFF;
+} */
+
+
+
+/* =====================================
+   TripVault — Electric Lime Trip Cards
+===================================== */
+
+/* .trip-card {
+  background-color: #CCFF00;
+  border: 1px solid #B8E600;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(23, 33, 23, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(23, 33, 23, 0.15);
+} */
+
+/* Trip card content */
+/* .trip-card-content {
+  background-color: #CCFF00;
+  color: #263326;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #172117;
+  margin-bottom: 12px;
+}
+
+.trip-card-content p {
+  color: #263326;
+  line-height: 1.6;
+} */
+
+/* Missing cover image */
+/* .trip-image-placeholder {
+  background-color: #B8E600;
+  color: #172117;
+}  */
+
+/* Keep the dashboard background white */
+/* .dashboard {
+  background-color: #FFFFFF;
+} */
+
+/* Existing Create Trip button colour remains unchanged */
+/* .create-button {
+  background-color: #20D6C2;
+} */
+
+/* 
+.trip-card {
+  background-color: #FF46A2;
+  border: 1px solid #F02F8D;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(23, 33, 23, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(23, 33, 23, 0.15);
+}
+
+/* Trip card content */
+/* .trip-card-content {
+  background-color: #FF46A2;
+  color: #351025;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #351025;
+  margin-bottom: 12px;
+}
+
+.trip-card-content p { */
+  /* color: #351025;
+  line-height: 1.6;
+} */
+
+/* Missing cover image */
+/* .trip-image-placeholder {
+  background-color: #F02F8D;
+  color: #FFFFFF;
+} */ */
+
+/* 
+.trip-card {
+  background-color: #069494;
+  border: 1px solid #047A7A;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(23, 33, 23, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+} */
+/* 
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(23, 33, 23, 0.15);
+} */
+
+/* Trip card content */
+/* .trip-card-content {
+  background-color: #069494;
+  color: #FFFFFF;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #FFFFFF;
+  margin-bottom: 12px;
+} */
+
+/* .trip-card-content p {
+  color: #FFFFFF;
+  line-height: 1.6;
+} */
+
+/* Missing cover image */
+/* .trip-image-placeholder {
+  background-color: #047A7A;
+  color: #FFFFFF;
+} */
+
+
+
+.trip-card {
+  background-color: #8C1946;
+  border: 1px solid #701338;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(23, 33, 23, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(23, 33, 23, 0.15);
+}
+
+/* Trip card content */
+.trip-card-content {
+  background-color: #8C1946;
+  color: #FFFFFF;
+  padding: 20px;
+}
+
+.trip-card-content h3 {
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.trip-card-content p {
+  color: #FFFFFF;
+  line-height: 1.6;
+}
+
+/* Missing cover image */
+.trip-image-placeholder {
+  background-color: #701338;
+  color: #FFFFFF;
+}
