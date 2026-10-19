@@ -2388,14 +2388,31 @@ function Dashboard() {
 
       const status = error.response?.status;
 
-      if (status === 401 || status === 403) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+      // if (status === 401 || status === 403) {
+      //   localStorage.removeItem("token");
+      //   localStorage.removeItem("user");
 
-        toast.error("Your session has expired. Please log in again.");
-        navigate("/login", { replace: true });
-        return;
-      }
+      //   toast.error("Your session has expired. Please log in again.");
+      //   navigate("/login", { replace: true });
+      //   return;
+      // }
+      
+if (status === 401) {
+  toast.error("Your session has expired. Please log in again.");
+  navigate("/login", { replace: true });
+  return;
+}
+
+if (status === 403) {
+  const errorMessage =
+    error.response?.data?.message ||
+    "Your request was rejected. Please refresh and try again.";
+
+  setLoadError(errorMessage);
+  toast.error(errorMessage);
+  return;
+}
+
 
       const errorMessage =
         error.response?.data?.message ||
