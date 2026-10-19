@@ -1672,7 +1672,7 @@ Possible future improvements include:
 A full-stack travel memory management application built using React, Node.js, Express, MongoDB, JWT, Multer, and Cloudinary.
 --->
 
-
+<!-- 
 # TripVault ✈️
 
 TripVault is a full-stack travel memory management application that allows users to securely save, manage, and revisit their travel memories.
@@ -2257,5 +2257,591 @@ B.Tech Computer Science Engineering
 ## ⭐ Support
 
 If you find TripVault useful, consider giving the repository a star on GitHub.
+
+**TripVault — Save your journeys. Keep your memories.** -->
+
+# TripVault ✈️
+
+**Save your journeys. Keep your memories.**
+
+TripVault is a full-stack travel memory management application that allows users to securely store, organize, and revisit their travel experiences. Users can create accounts, manage trips, upload travel photos, and share travel memories through public profiles.
+
+## 🌐 Live Demo
+
+- **Live Website:** https://trip-vault-seven.vercel.app/
+- **Backend API:** https://tripvault-backend-xd5x.onrender.com
+- **GitHub Repository:** https://github.com/khushi2005-spec/TripVault
+
+## 📌 Project Overview
+
+TripVault follows the MERN stack architecture, with a React frontend, an Express and Node.js backend, and MongoDB for data storage.
+
+The application includes cookie-based authentication, protected routes, trip management, Cloudinary image storage, and public travel profiles.
+
+### Technology Stack
+
+- **Frontend:** React, Vite, React Router, Axios, CSS
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB Atlas, Mongoose
+- **Authentication:** JSON Web Token (JWT), HttpOnly cookies
+- **Security:** bcryptjs, CSRF protection, CORS, Helmet
+- **Image Storage:** Cloudinary, Multer
+- **Deployment:** Vercel and Render
+
+## 🚀 Features
+
+### 🔐 Authentication and Security
+
+- User registration and login
+- Password hashing using bcryptjs
+- JWT-based authentication using HttpOnly cookies
+- Protected frontend routes and backend API endpoints
+- CSRF protection for state-changing authenticated requests
+- Login and registration validation
+- Logout and session persistence
+- User-specific trip access and ownership verification
+- Environment-based configuration for sensitive credentials
+
+### 🗺️ Trip Management
+
+- Create, view, edit, and delete trips
+- Store trip titles and destinations
+- Record start and end dates
+- Add trip descriptions
+- Rate trips from 1 to 5
+- View individual trip details
+- Associate trips with their authenticated owners
+- Dashboard loading, error, and empty states
+
+### 📸 Photo Uploads
+
+- Upload travel photos to Cloudinary
+- Display trip cover images
+- Support multiple photos per trip
+- Preview images where supported by the interface
+- Validate supported image formats
+- Enforce a 5 MB upload limit
+- Support JPG, JPEG, PNG, and WEBP formats
+
+### 👤 Public Profiles
+
+- Unique usernames
+- Profile bio management
+- Public travel profile pages
+- Public trip cards and travel information
+- Profile navigation
+- Profile editing for authenticated users
+
+Public profile access and displayed information depend on the implemented profile routes and visibility rules.
+
+### 📱 User Interface
+
+- Responsive layouts for desktop and mobile
+- Navigation and mobile menu
+- Trip cards and photo galleries
+- Loading indicators and error messages
+- Toast notifications
+- Empty-state messaging
+- Consistent styling across application pages
+
+## 🔄 CRUD Operations
+
+CRUD stands for Create, Read, Update, and Delete.
+
+| Operation | Description |
+|---|---|
+| Create | Add a trip with travel information |
+| Read | View personal trips and trip details |
+| Update | Modify existing trip information |
+| Delete | Remove a trip |
+
+The backend associates trips with authenticated users and checks ownership before protected trip operations.
+
+## 🧳 Trip Information
+
+A trip can contain the following fields:
+
+| Field | Description |
+|---|---|
+| Title | Name of the trip |
+| Destination | Travel destination |
+| Start Date | Beginning of the trip |
+| End Date | End of the trip |
+| Description | Travel details and memories |
+| Rating | Rating from 1 to 5 |
+| Cover Image | Main trip image |
+| Photos | Collection of trip photo URLs |
+| User | Reference to the trip owner |
+
+## 🏗️ Application Architecture
+
+TripVault separates the user interface, backend services, database, and image storage.
+
+```text
+                User
+                 |
+                 v
+        React Frontend (Vite)
+                 |
+                 v
+          Axios API Service
+                 |
+          HTTPS API Requests
+                 |
+                 v
+       Node.js / Express Backend
+                 |
+       +---------+----------+
+       |                    |
+       v                    v
+Authentication         Trip and User
+Middleware             Routes
+       |                    |
+       +---------+----------+
+                 |
+          MongoDB / Mongoose
+                 |
+                 v
+             Trip Data
+
+Photo Uploads --> Multer --> Cloudinary
+```
+
+The frontend communicates with the backend through API requests. The backend validates requests, authenticates users, enforces trip ownership, and interacts with MongoDB. Uploaded images are stored through Cloudinary.
+
+## 🔒 Authentication and CSRF Protection
+
+TripVault uses JWT-based authentication with an HttpOnly cookie.
+
+### Authentication Flow
+
+```text
+User Registration
+        |
+        v
+Password Hashed with bcryptjs
+        |
+        v
+User Stored in MongoDB
+        |
+        v
+User Logs In
+        |
+        v
+JWT Generated by Backend
+        |
+        v
+JWT Set in HttpOnly Cookie
+        |
+        v
+Browser Sends Cookie with API Requests
+        |
+        v
+Authentication Middleware Verifies JWT
+        |
+        v
+Protected Resource Access
+```
+
+The authentication token is not intentionally returned in the login response body or stored in localStorage. The browser manages the HttpOnly authentication cookie.
+
+### CSRF Protection
+
+The backend issues a CSRF token for use with state-changing authenticated requests. The frontend sends the token in the `X-CSRF-Token` header, and the backend validates it against the CSRF cookie.
+
+Production cookies are configured with appropriate security attributes, including `Secure`, `HttpOnly` for the authentication cookie, and the required `SameSite` setting.
+
+## ☁️ Cloudinary Image Storage
+
+TripVault uses Cloudinary to store travel photos.
+
+### Upload Flow
+
+```text
+User Selects Image
+        |
+        v
+Frontend Creates FormData
+        |
+        v
+Authenticated Upload Request
+        |
+        v
+Backend Validates Request
+        |
+        v
+Multer Processes Image
+        |
+        v
+Cloudinary Stores Image
+        |
+        v
+Image URL Saved to Trip
+        |
+        v
+Image Displayed in Application
+```
+
+The upload endpoint accepts an image for a specific trip. The backend checks trip ownership before updating the associated record.
+
+## 🌐 API Endpoints
+
+The following table summarizes the principal API routes. All endpoints are relative to the backend base URL.
+
+### Authentication APIs
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/auth/csrf` | Obtain a CSRF token |
+| POST | `/api/auth/register` | Register a user |
+| POST | `/api/auth/login` | Authenticate a user |
+| POST | `/api/auth/logout` | Log out and clear authentication cookies |
+| GET | `/api/auth/me` | Retrieve the authenticated user |
+
+### Trip APIs
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/trips` | Create a trip |
+| GET | `/api/trips` | Retrieve the authenticated user's trips |
+| GET | `/api/trips/:id` | Retrieve an individual trip |
+| PUT | `/api/trips/:id` | Update a trip |
+| DELETE | `/api/trips/:id` | Delete a trip |
+| POST | `/api/trips/:id/upload` | Upload a trip image |
+
+### Profile APIs
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/users/:username/profile` | Retrieve a public profile |
+| PUT | `/api/users/profile` | Update the authenticated user's profile |
+
+Protected endpoints require valid authentication. State-changing authenticated requests must also satisfy the backend's CSRF validation rules.
+
+## 🗄️ Database
+
+TripVault uses MongoDB Atlas for cloud database storage and Mongoose for schema definition and database operations.
+
+### User Model
+
+The user model contains account and profile information, including fields such as:
+
+- Name
+- Username
+- Email
+- Hashed password
+- Bio
+
+### Trip Model
+
+The trip model contains travel information, including:
+
+- Title
+- Destination
+- Start date
+- End date
+- Description
+- Rating
+- Cover image
+- Photo collection
+- User reference
+
+The user reference associates each trip with its owner.
+
+## 🧪 Testing
+
+TripVault includes automated backend tests and was tested during development and production verification.
+
+Testing areas include:
+
+- User registration and login
+- Invalid credentials and validation errors
+- Authentication cookies
+- Protected routes and session persistence
+- CSRF validation
+- Trip creation, retrieval, updating, and deletion
+- Trip ownership enforcement
+- Photo upload validation
+- Frontend production build
+
+Thunder Client was also used for API testing during development.
+
+The reported verification results included successful backend test execution and a successful frontend production build. Results should be updated if later code changes introduce new failures.
+
+## 🛠️ Technologies and Tools
+
+### Frontend
+
+- React
+- Vite
+- React Router
+- Axios
+- CSS
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- bcryptjs
+- JSON Web Token
+- cookie-parser
+- CORS
+- Helmet
+- dotenv
+- express-rate-limit
+- Multer
+- Cloudinary
+- multer-storage-cloudinary
+
+### Development and Deployment
+
+- Visual Studio Code
+- Git and GitHub
+- Thunder Client
+- MongoDB Atlas
+- Cloudinary
+- Vercel
+- Render
+
+## 📁 Project Structure
+
+```text
+TripVault/
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── Footer.jsx
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── CreateTrip.jsx
+│   │   │   ├── EditTrip.jsx
+│   │   │   ├── TripDetail.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   └── EditProfile.jsx
+│   │   ├── services/
+│   │   │   └── api.jsx
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+├── server/
+│   ├── config/
+│   │   └── cloudinary.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── csrfMiddleware.js
+│   │   └── upload.js
+│   ├── models/
+│   │   ├── Trip.js
+│   │   └── user.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── trip.js
+│   │   └── user.js
+│   ├── tests/
+│   │   ├── app.test.js
+│   │   ├── auth.test.js
+│   │   ├── trip.test.js
+│   │   └── upload.test.js
+│   ├── .env.example
+│   ├── index.js
+│   └── package.json
+├── .gitignore
+└── README.md
+```
+
+This tree summarizes the main project files; configuration and supporting files may also be present.
+
+## 🚀 Deployment
+
+TripVault uses separate services for the frontend and backend.
+
+| Component | Platform |
+|---|---|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | MongoDB Atlas |
+| Image Storage | Cloudinary |
+| Source Control | GitHub |
+
+### Frontend Configuration
+
+Configure the following environment variable in Vercel:
+
+```env
+VITE_API_URL=https://tripvault-backend-xd5x.onrender.com
+```
+
+The frontend API service appends `/api` to this base URL.
+
+For local development, the frontend uses the configured development API URL, normally `http://localhost:5000`.
+
+### Backend Configuration
+
+Configure the required variables in the Render service environment:
+
+```env
+NODE_ENV=production
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_strong_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+The hosting platform may supply the port automatically. The backend should use the configured port rather than depend on a fixed production port.
+
+Use actual credentials only in the appropriate local or hosting environment settings. Never put real secrets in the README or commit them to GitHub.
+
+## 📦 Installation and Setup
+
+### Prerequisites
+
+Install:
+
+- Node.js and npm
+- Git
+- A configured MongoDB database
+- Cloudinary credentials for image uploads
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/khushi2005-spec/TripVault.git
+cd TripVault
+```
+
+### 2. Configure the Backend
+
+Open a terminal at the project root:
+
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file inside the `server` directory and add your own development credentials:
+
+```env
+NODE_ENV=development
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_development_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+Start the backend using the script defined in `server/package.json`. If the project provides the `dev` script, run:
+
+```bash
+npm run dev
+```
+
+### 3. Configure the Frontend
+
+Open a second terminal:
+
+```bash
+cd client
+npm install
+```
+
+If you need to configure a local API URL, create `client/.env.local`:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Vite displays the local frontend URL in the terminal, normally `http://localhost:5173`.
+
+Ensure that the backend CORS configuration permits the local frontend origin.
+
+## 🔒 Security Practices
+
+TripVault incorporates security measures including:
+
+- Password hashing with bcryptjs
+- JWT verification through backend middleware
+- HttpOnly authentication cookies
+- CSRF validation for state-changing authenticated requests
+- Protected frontend routes and backend endpoints
+- Trip ownership checks
+- Login and registration rate limiting
+- Input and image upload validation
+- Environment-based secrets management
+- Restricted public profile information
+- Secure production cookie configuration
+
+Security depends on correct environment configuration and keeping dependencies and application code updated.
+
+## 📱 Typical User Flow
+
+1. Register a new account.
+2. Log in to TripVault.
+3. Access the protected dashboard.
+4. Create a trip with destination and travel dates.
+5. Upload a travel photo.
+6. View the saved trip and its photos.
+7. Edit or delete a trip.
+8. Update profile information.
+9. Share a public profile where supported.
+10. Log out securely.
+
+## 📊 Project Status
+
+| Area | Status |
+|---|---|
+| Authentication | Implemented and tested |
+| Trip CRUD | Implemented and tested |
+| Database Integration | Implemented |
+| Cloudinary Uploads | Implemented and tested |
+| Public Profiles | Implemented; verify visibility rules |
+| Responsive Interface | Implemented |
+| CSRF Protection | Implemented and tested |
+| Automated Backend Tests | Available |
+| Frontend Production Build | Verified |
+| Production Deployment | Deployed and functionally verified |
+
+## 🔮 Future Improvements
+
+Potential improvements include:
+
+- Pagination for large trip collections
+- Trip search and filtering
+- Travel statistics and summaries
+- Enhanced photo organization
+- Improved accessibility and mobile usability
+- More comprehensive end-to-end testing
+- Automated deployment monitoring
+- Additional profile customization options
+
+## 👩‍💻 Author
+
+**Khushi**  
+B.Tech Computer Science Engineering
+
+- **GitHub:** https://github.com/khushi2005-spec
+
+## ⭐ Support
+
+If you find TripVault useful, consider starring the repository on GitHub.
 
 **TripVault — Save your journeys. Keep your memories.**
