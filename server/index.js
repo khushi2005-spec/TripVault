@@ -395,6 +395,7 @@ app.disable("x-powered-by");
 const allowedOrigins = [
   "http://localhost:5173",
   "https://trip-vault-seven.vercel.app",
+  "https://tripvault-backend-xd5x.onrender.com",
 ];
 
 app.use(
