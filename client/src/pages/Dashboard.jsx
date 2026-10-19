@@ -2357,6 +2357,275 @@
 
 // export default Dashboard;
 
+// import { useCallback, useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import API from "../services/api";
+// import Navbar from "../components/Navbar";
+
+// function Dashboard() {
+//   const navigate = useNavigate();
+
+//   const [user, setUser] = useState(null);
+//   const [trips, setTrips] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [loadError, setLoadError] = useState("");
+//   const [deletingId, setDeletingId] = useState(null);
+
+//   // Fetch user and trip data
+//   const getDashboardData = useCallback(async () => {
+//     setLoading(true);
+//     setLoadError("");
+
+//     try {
+//       const userResponse = await API.get("/auth/me");
+//       setUser(userResponse.data.user);
+
+//       const tripsResponse = await API.get("/trips");
+//       setTrips(tripsResponse.data.trips || []);
+//     } catch (error) {
+//       console.error("Dashboard error:", error);
+
+//       const status = error.response?.status;
+
+//       // if (status === 401 || status === 403) {
+//       //   localStorage.removeItem("token");
+//       //   localStorage.removeItem("user");
+
+//       //   toast.error("Your session has expired. Please log in again.");
+//       //   navigate("/login", { replace: true });
+//       //   return;
+//       // }
+      
+// if (status === 401) {
+//   toast.error("Your session has expired. Please log in again.");
+//   navigate("/login", { replace: true });
+//   return;
+// }
+
+// if (status === 403) {
+//   const errorMessage =
+//     error.response?.data?.message ||
+//     "Your request was rejected. Please refresh and try again.";
+
+//   setLoadError(errorMessage);
+//   toast.error(errorMessage);
+//   return;
+// }
+
+
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Unable to load your dashboard. Please check your connection and try again.";
+
+//       setLoadError(errorMessage);
+//       toast.error(errorMessage);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [navigate]);
+
+//   useEffect(() => {
+//     getDashboardData();
+//   }, [getDashboardData]);
+
+//   // Delete trip
+//   const handleDeleteTrip = async (tripId) => {
+//     const confirmDelete = window.confirm(
+//       "Are you sure you want to delete this trip?"
+//     );
+
+//     if (!confirmDelete) return;
+
+//     try {
+//       setDeletingId(tripId);
+
+//       await API.delete(`/trips/${tripId}`);
+
+//       setTrips((prevTrips) =>
+//         prevTrips.filter((trip) => trip._id !== tripId)
+//       );
+
+//       toast.success("Trip deleted successfully!");
+//     } catch (error) {
+//       console.error("Delete trip error:", error);
+
+//       toast.error(
+//         error.response?.data?.message ||
+//           "Failed to delete trip. Please try again."
+//       );
+//     } finally {
+//       setDeletingId(null);
+//     }
+//   };
+
+//   // Loading state
+//   if (loading) {
+//     return (
+//       <div className="loading" role="status" aria-live="polite">
+//         Loading your memories...
+//       </div>
+//     );
+//   }
+
+//   // Error state with retry
+//   if (loadError) {
+//     return (
+//       <div className="dashboard">
+//         <Navbar />
+
+//         <main className="dashboard-content">
+//           <div className="empty-state" role="alert">
+//             <h2>Unable to load your dashboard</h2>
+//             <p>{loadError}</p>
+
+//             <button onClick={getDashboardData}>
+//               Try Again
+//             </button>
+//           </div>
+//         </main>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="dashboard">
+//       <Navbar />
+
+//       <main className="dashboard-content">
+//         {/* Welcome Section */}
+//         <section className="welcome-card">
+//           <div className="travel-icon">✈️</div>
+
+//           <p className="small-heading">WELCOME TO TRIPVAULT</p>
+
+//           <h1>Hello, {user?.name || "Traveler"}!</h1>
+
+//           <p>Your travel memory journey starts here.</p>
+
+//           <div className="user-info">
+//             <div>
+//               <span>Name</span>
+//               <strong>{user?.name || "N/A"}</strong>
+//             </div>
+
+//             <div>
+//               <span>Email</span>
+//               <strong>{user?.email || "N/A"}</strong>
+//             </div>
+//           </div>
+//         </section>
+
+//         {/* Trips Section */}
+//         <section>
+//           <div className="trips-header">
+//             <div>
+//               <p className="small-heading">YOUR JOURNEY</p>
+//               <h2>Travel Memories</h2>
+//             </div>
+
+//             <button
+//               className="create-button"
+//               onClick={() => navigate("/create-trip")}
+//             >
+//               + Create Trip
+//             </button>
+//           </div>
+
+//           {/* Empty State */}
+//           {trips.length === 0 && (
+//             <div className="empty-state">
+//               <div>✈️</div>
+//               <h2>Your memories are waiting</h2>
+
+//               <p>You haven't created any trips yet.</p>
+
+//               <button onClick={() => navigate("/create-trip")}>
+//                 Create Your First Trip
+//               </button>
+//             </div>
+//           )}
+
+//           {/* Trip Cards */}
+//           {trips.length > 0 && (
+//             <div className="trip-grid">
+//               {trips.map((trip) => (
+//                 <div className="trip-card" key={trip._id}>
+//                   {/* Trip Image */}
+//                   {trip.coverImage ? (
+//                     <img
+//                       src={trip.coverImage}
+//                       alt={trip.title || "Trip cover"}
+//                       className="trip-image"
+//                     />
+//                   ) : (
+//                     <div className="trip-image-placeholder">
+//                       ✈️
+//                     </div>
+//                   )}
+
+//                   <div className="trip-card-content">
+//                     <h3>{trip.title}</h3>
+
+//                     <p>📍 {trip.destination}</p>
+
+//                     <p>
+//                       📅{" "}
+//                       {trip.startDate
+//                         ? new Date(trip.startDate).toLocaleDateString()
+//                         : "N/A"}
+//                       {" - "}
+//                       {trip.endDate
+//                         ? new Date(trip.endDate).toLocaleDateString()
+//                         : "N/A"}
+//                     </p>
+
+//                     {trip.rating && (
+//                       <p>⭐ Rating: {trip.rating}/5</p>
+//                     )}
+
+//                     {trip.description && <p>{trip.description}</p>}
+
+//                     {/* Actions */}
+//                     <div className="trip-actions">
+//                       <button
+//                         className="view-button"
+//                         onClick={() => navigate(`/trip/${trip._id}`)}
+//                       >
+//                         View Details
+//                       </button>
+
+//                       <button
+//                         className="edit-button"
+//                         onClick={() => navigate(`/edit-trip/${trip._id}`)}
+//                       >
+//                         Edit
+//                       </button>
+
+//                       <button
+//                         className="delete-button"
+//                         onClick={() => handleDeleteTrip(trip._id)}
+//                         disabled={deletingId === trip._id}
+//                       >
+//                         {deletingId === trip._id
+//                           ? "Deleting..."
+//                           : "Delete"}
+//                       </button>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+//         </section>
+//       </main>
+//     </div>
+//   );
+// }
+
+// export default Dashboard;
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -2382,37 +2651,26 @@ function Dashboard() {
       setUser(userResponse.data.user);
 
       const tripsResponse = await API.get("/trips");
-      setTrips(tripsResponse.data.trips || []);
+      setTrips(
+        Array.isArray(tripsResponse.data.trips)
+          ? tripsResponse.data.trips
+          : Array.isArray(tripsResponse.data)
+            ? tripsResponse.data
+            : []
+      );
     } catch (error) {
       console.error("Dashboard error:", error);
 
       const status = error.response?.status;
 
-      // if (status === 401 || status === 403) {
-      //   localStorage.removeItem("token");
-      //   localStorage.removeItem("user");
+      if (status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
-      //   toast.error("Your session has expired. Please log in again.");
-      //   navigate("/login", { replace: true });
-      //   return;
-      // }
-      
-if (status === 401) {
-  toast.error("Your session has expired. Please log in again.");
-  navigate("/login", { replace: true });
-  return;
-}
-
-if (status === 403) {
-  const errorMessage =
-    error.response?.data?.message ||
-    "Your request was rejected. Please refresh and try again.";
-
-  setLoadError(errorMessage);
-  toast.error(errorMessage);
-  return;
-}
-
+        toast.error("Your session has expired. Please log in again.");
+        navigate("/login", { replace: true });
+        return;
+      }
 
       const errorMessage =
         error.response?.data?.message ||
@@ -2462,8 +2720,13 @@ if (status === 403) {
   // Loading state
   if (loading) {
     return (
-      <div className="loading" role="status" aria-live="polite">
-        Loading your memories...
+      <div className="dashboard">
+        <Navbar />
+        <main className="dashboard-content">
+          <div className="loading" role="status" aria-live="polite">
+            Loading your memories...
+          </div>
+        </main>
       </div>
     );
   }
@@ -2479,9 +2742,7 @@ if (status === 403) {
             <h2>Unable to load your dashboard</h2>
             <p>{loadError}</p>
 
-            <button onClick={getDashboardData}>
-              Try Again
-            </button>
+            <button onClick={getDashboardData}>Try Again</button>
           </div>
         </main>
       </div>
@@ -2537,7 +2798,6 @@ if (status === 403) {
             <div className="empty-state">
               <div>✈️</div>
               <h2>Your memories are waiting</h2>
-
               <p>You haven't created any trips yet.</p>
 
               <button onClick={() => navigate("/create-trip")}>
@@ -2551,23 +2811,40 @@ if (status === 403) {
             <div className="trip-grid">
               {trips.map((trip) => (
                 <div className="trip-card" key={trip._id}>
-                  {/* Trip Image */}
+                  {/* Trip Cover Image */}
                   {trip.coverImage ? (
                     <img
                       src={trip.coverImage}
-                      alt={trip.title || "Trip cover"}
+                      alt={`${trip.title || "Trip"} cover`}
                       className="trip-image"
+                      loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                        const placeholder =
+                          event.currentTarget.nextElementSibling;
+
+                        if (placeholder) {
+                          placeholder.style.display = "flex";
+                        }
+                      }}
                     />
-                  ) : (
-                    <div className="trip-image-placeholder">
-                      ✈️
-                    </div>
-                  )}
+                  ) : null}
+
+                  {/* Fallback for missing or broken images */}
+                  <div
+                    className="trip-image-placeholder"
+                    style={{
+                      display: trip.coverImage ? "none" : "flex",
+                    }}
+                    aria-label="No trip cover image available"
+                  >
+                    ✈️
+                  </div>
 
                   <div className="trip-card-content">
-                    <h3>{trip.title}</h3>
+                    <h3>{trip.title || "Untitled Trip"}</h3>
 
-                    <p>📍 {trip.destination}</p>
+                    <p>📍 {trip.destination || "Destination not specified"}</p>
 
                     <p>
                       📅{" "}
@@ -2580,13 +2857,13 @@ if (status === 403) {
                         : "N/A"}
                     </p>
 
-                    {trip.rating && (
+                    {trip.rating != null && (
                       <p>⭐ Rating: {trip.rating}/5</p>
                     )}
 
                     {trip.description && <p>{trip.description}</p>}
 
-                    {/* Actions */}
+                    {/* Trip Actions */}
                     <div className="trip-actions">
                       <button
                         className="view-button"
@@ -2607,9 +2884,7 @@ if (status === 403) {
                         onClick={() => handleDeleteTrip(trip._id)}
                         disabled={deletingId === trip._id}
                       >
-                        {deletingId === trip._id
-                          ? "Deleting..."
-                          : "Delete"}
+                        {deletingId === trip._id ? "Deleting..." : "Delete"}
                       </button>
                     </div>
                   </div>

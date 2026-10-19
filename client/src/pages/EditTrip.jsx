@@ -1697,6 +1697,466 @@
 // export default EditTrip;
 
 
+// import { useCallback, useEffect, useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import API from "../services/api";
+// import Navbar from "../components/Navbar";
+
+// function EditTrip() {
+//   const navigate = useNavigate();
+//   const { id } = useParams();
+
+//   const [formData, setFormData] = useState({
+//     title: "",
+//     destination: "",
+//     startDate: "",
+//     endDate: "",
+//     description: "",
+//     rating: "",
+//   });
+
+//   const [selectedFile, setSelectedFile] = useState(null);
+//   const [preview, setPreview] = useState("");
+//   const [loading, setLoading] = useState(true);
+//   const [saving, setSaving] = useState(false);
+//   const [uploading, setUploading] = useState(false);
+//   const [error, setError] = useState("");
+//   const [loadError, setLoadError] = useState("");
+//   const [message, setMessage] = useState("");
+
+//   // Get existing trip
+//   const getTrip = useCallback(async () => {
+//     setLoading(true);
+//     setLoadError("");
+
+//     try {
+//       const response = await API.get(`/trips/${id}`);
+//       const trip = response.data.trip;
+
+//       if (!trip) {
+//         const errorMessage =
+//           "Trip not found. It may have been deleted.";
+
+//         setLoadError(errorMessage);
+
+//         setFormData({
+//           title: "",
+//           destination: "",
+//           startDate: "",
+//           endDate: "",
+//           description: "",
+//           rating: "",
+//         });
+
+//         setPreview("");
+//         toast.error(errorMessage);
+//         return;
+//       }
+
+//       setFormData({
+//         title: trip.title || "",
+//         destination: trip.destination || "",
+//         startDate: trip.startDate
+//           ? trip.startDate.substring(0, 10)
+//           : "",
+//         endDate: trip.endDate
+//           ? trip.endDate.substring(0, 10)
+//           : "",
+//         description: trip.description || "",
+//         rating:
+//           trip.rating !== undefined && trip.rating !== null
+//             ? String(trip.rating)
+//             : "",
+//       });
+
+//       setPreview(trip.coverImage || "");
+//       setSelectedFile(null);
+//       setError("");
+//     } catch (error) {
+//       console.error("Get Trip Error:", error);
+
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Failed to load trip. Please try again.";
+
+//       setLoadError(errorMessage);
+//       toast.error(errorMessage);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [id]);
+
+//   useEffect(() => {
+//     getTrip();
+//   }, [getTrip]);
+
+//   // Handle input changes
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+
+//     setFormData((previousData) => ({
+//       ...previousData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // Handle photo selection
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+
+//     if (!file) return;
+
+//     const allowedTypes = [
+//       "image/jpeg",
+//       "image/png",
+//       "image/webp",
+//     ];
+
+//     if (!allowedTypes.includes(file.type)) {
+//       const errorMessage =
+//         "Please select a JPG, PNG, or WEBP image.";
+
+//       setError(errorMessage);
+//       toast.error(errorMessage);
+//       e.target.value = "";
+//       return;
+//     }
+
+//     if (file.size > 5 * 1024 * 1024) {
+//       const errorMessage =
+//         "Image size must be less than 5 MB.";
+
+//       setError(errorMessage);
+//       toast.error(errorMessage);
+//       e.target.value = "";
+//       return;
+//     }
+
+//     setError("");
+//     setSelectedFile(file);
+
+//     setPreview((previousPreview) => {
+//       if (previousPreview.startsWith("blob:")) {
+//         URL.revokeObjectURL(previousPreview);
+//       }
+
+//       return URL.createObjectURL(file);
+//     });
+//   };
+
+//   // Upload selected photo
+//   const uploadPhoto = async () => {
+//     if (!selectedFile) return true;
+
+//     try {
+//       setUploading(true);
+
+//       const imageData = new FormData();
+//       imageData.append("image", selectedFile);
+
+//       const response = await API.post(
+//         `/trips/${id}/upload`,
+//         imageData
+//       );
+
+//       toast.success(
+//         response.data?.message ||
+//           "Photo uploaded successfully!"
+//       );
+
+//       return true;
+//     } catch (error) {
+//       console.error("Photo Upload Error:", error);
+
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Failed to upload photo. Please try again.";
+
+//       setError(errorMessage);
+//       toast.error(errorMessage);
+
+//       return false;
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
+
+//   // Update trip
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     setError("");
+//     setMessage("");
+//     setSaving(true);
+
+//     try {
+//       const dataToSend = {
+//         title: formData.title,
+//         destination: formData.destination,
+//         startDate: formData.startDate,
+//         endDate: formData.endDate,
+//         description: formData.description,
+//         rating: formData.rating
+//           ? Number(formData.rating)
+//           : undefined,
+//       };
+
+//       // Update trip information
+//       const response = await API.put(
+//         `/trips/${id}`,
+//         dataToSend
+//       );
+
+//       // Upload a new photo if selected
+//       if (selectedFile) {
+//         const uploadSuccess = await uploadPhoto();
+
+//         if (!uploadSuccess) return;
+//       }
+
+//       const successMessage = selectedFile
+//         ? "Trip updated and photo uploaded successfully!"
+//         : response.data?.message ||
+//           "Trip updated successfully!";
+
+//       setMessage(successMessage);
+//       toast.success(successMessage);
+
+//       setTimeout(() => {
+//         navigate("/dashboard");
+//       }, 1200);
+//     } catch (error) {
+//       console.error("Update Trip Error:", error);
+
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Failed to update trip. Please try again.";
+
+//       setError(errorMessage);
+//       toast.error(errorMessage);
+//     } finally {
+//       setSaving(false);
+//     }
+//   };
+
+//   // Loading state
+//   if (loading) {
+//     return (
+//       <>
+//         <Navbar />
+//         <div className="loading" role="status">
+//           Loading trip...
+//         </div>
+//       </>
+//     );
+//   }
+
+//   // Loading error state with retry button
+//   if (loadError) {
+//     return (
+//       <div className="trip-form-page">
+//         <Navbar />
+
+//         <main className="trip-form-container">
+//           <div className="trip-form-card">
+//             <div className="error-message" role="alert">
+//               {loadError}
+//             </div>
+
+//             <div className="form-actions">
+//               <button
+//                 type="button"
+//                 className="primary-button"
+//                 onClick={getTrip}
+//               >
+//                 Try Again
+//               </button>
+
+//               <button
+//                 type="button"
+//                 className="secondary-button"
+//                 onClick={() => navigate("/dashboard")}
+//               >
+//                 Back to Dashboard
+//               </button>
+//             </div>
+//           </div>
+//         </main>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="trip-form-page">
+//       <Navbar />
+
+//       <main className="trip-form-container">
+//         <div className="trip-form-header">
+//           <p className="small-heading">UPDATE MEMORY</p>
+//           <h1>Edit Your Trip</h1>
+//           <p>
+//             Update your trip details and add another memory.
+//           </p>
+//         </div>
+
+//         <div className="trip-form-card">
+//           {error && (
+//             <div className="error-message" role="alert">
+//               {error}
+//             </div>
+//           )}
+
+//           {message && (
+//             <div className="success-message" role="status">
+//               {message}
+//             </div>
+//           )}
+
+//           <form onSubmit={handleSubmit}>
+//             <div className="form-group">
+//               <label htmlFor="title">Trip Title</label>
+//               <input
+//                 id="title"
+//                 type="text"
+//                 name="title"
+//                 placeholder="e.g. My Goa Adventure"
+//                 value={formData.title}
+//                 onChange={handleChange}
+//                 required
+//                 disabled={saving}
+//               />
+//             </div>
+
+//             <div className="form-group">
+//               <label htmlFor="destination">Destination</label>
+//               <input
+//                 id="destination"
+//                 type="text"
+//                 name="destination"
+//                 placeholder="e.g. Goa, India"
+//                 value={formData.destination}
+//                 onChange={handleChange}
+//                 required
+//                 disabled={saving}
+//               />
+//             </div>
+
+//             <div className="date-row">
+//               <div className="form-group">
+//                 <label htmlFor="startDate">Start Date</label>
+//                 <input
+//                   id="startDate"
+//                   type="date"
+//                   name="startDate"
+//                   value={formData.startDate}
+//                   onChange={handleChange}
+//                   required
+//                   disabled={saving}
+//                 />
+//               </div>
+
+//               <div className="form-group">
+//                 <label htmlFor="endDate">End Date</label>
+//                 <input
+//                   id="endDate"
+//                   type="date"
+//                   name="endDate"
+//                   value={formData.endDate}
+//                   onChange={handleChange}
+//                   required
+//                   disabled={saving}
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="form-group">
+//               <label htmlFor="description">Description</label>
+//               <textarea
+//                 id="description"
+//                 name="description"
+//                 placeholder="Write something about your trip..."
+//                 value={formData.description}
+//                 onChange={handleChange}
+//                 disabled={saving}
+//               />
+//             </div>
+
+//             <div className="form-group">
+//               <label htmlFor="rating">Rating</label>
+//               <select
+//                 id="rating"
+//                 name="rating"
+//                 value={formData.rating}
+//                 onChange={handleChange}
+//                 disabled={saving}
+//               >
+//                 <option value="">Select Rating</option>
+//                 <option value="1">⭐ 1</option>
+//                 <option value="2">⭐⭐ 2</option>
+//                 <option value="3">⭐⭐⭐ 3</option>
+//                 <option value="4">⭐⭐⭐⭐ 4</option>
+//                 <option value="5">⭐⭐⭐⭐⭐ 5</option>
+//               </select>
+//             </div>
+
+//             <div className="form-group">
+//               <label htmlFor="image">Add Trip Photo</label>
+//               <input
+//                 id="image"
+//                 type="file"
+//                 accept="image/jpeg,image/png,image/webp"
+//                 onChange={handleFileChange}
+//                 disabled={saving}
+//               />
+
+//               <small>
+//                 Select JPG, PNG or WEBP image.
+//                 Maximum size: 5 MB.
+//               </small>
+//             </div>
+
+//             {preview && (
+//               <div className="image-preview-container">
+//                 <p className="small-heading">PHOTO PREVIEW</p>
+//                 <img
+//                   src={preview}
+//                   alt="Trip preview"
+//                   className="image-preview"
+//                 />
+//               </div>
+//             )}
+
+//             <div className="form-actions">
+//               <button
+//                 type="submit"
+//                 className="primary-button"
+//                 disabled={saving || uploading}
+//               >
+//                 {saving || uploading
+//                   ? "Saving..."
+//                   : "Save Changes"}
+//               </button>
+
+//               <button
+//                 type="button"
+//                 className="secondary-button"
+//                 onClick={() => navigate("/dashboard")}
+//                 disabled={saving || uploading}
+//               >
+//                 Cancel
+//               </button>
+//             </div>
+//           </form>
+//         </div>
+//       </main>
+//     </div>
+//   );
+// }
+
+// export default EditTrip;
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -1725,33 +2185,17 @@ function EditTrip() {
   const [loadError, setLoadError] = useState("");
   const [message, setMessage] = useState("");
 
-  // Get existing trip
+  // Load the existing trip.
   const getTrip = useCallback(async () => {
     setLoading(true);
     setLoadError("");
 
     try {
       const response = await API.get(`/trips/${id}`);
-      const trip = response.data.trip;
+      const trip = response.data?.trip || response.data;
 
-      if (!trip) {
-        const errorMessage =
-          "Trip not found. It may have been deleted.";
-
-        setLoadError(errorMessage);
-
-        setFormData({
-          title: "",
-          destination: "",
-          startDate: "",
-          endDate: "",
-          description: "",
-          rating: "",
-        });
-
-        setPreview("");
-        toast.error(errorMessage);
-        return;
+      if (!trip || !trip._id) {
+        throw new Error("Trip not found. It may have been deleted.");
       }
 
       setFormData({
@@ -1773,11 +2217,12 @@ function EditTrip() {
       setPreview(trip.coverImage || "");
       setSelectedFile(null);
       setError("");
-    } catch (error) {
-      console.error("Get Trip Error:", error);
+    } catch (err) {
+      console.error("Get Trip Error:", err);
 
       const errorMessage =
-        error.response?.data?.message ||
+        err.response?.data?.message ||
+        err.message ||
         "Failed to load trip. Please try again.";
 
       setLoadError(errorMessage);
@@ -1791,7 +2236,19 @@ function EditTrip() {
     getTrip();
   }, [getTrip]);
 
-  // Handle input changes
+  // Release temporary preview URLs when replaced or unmounted.
+  useEffect(() => {
+    if (!selectedFile) return undefined;
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [selectedFile]);
+
+  // Handle form inputs.
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -1799,11 +2256,14 @@ function EditTrip() {
       ...previousData,
       [name]: value,
     }));
+
+    setError("");
+    setMessage("");
   };
 
-  // Handle photo selection
+  // Validate and select a replacement photo.
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!file) return;
 
@@ -1825,7 +2285,7 @@ function EditTrip() {
 
     if (file.size > 5 * 1024 * 1024) {
       const errorMessage =
-        "Image size must be less than 5 MB.";
+        "Image size must not exceed 5 MB.";
 
       setError(errorMessage);
       toast.error(errorMessage);
@@ -1834,43 +2294,31 @@ function EditTrip() {
     }
 
     setError("");
+    setMessage("");
     setSelectedFile(file);
-
-    setPreview((previousPreview) => {
-      if (previousPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(previousPreview);
-      }
-
-      return URL.createObjectURL(file);
-    });
   };
 
-  // Upload selected photo
+  // Upload a replacement photo.
   const uploadPhoto = async () => {
     if (!selectedFile) return true;
 
-    try {
-      setUploading(true);
+    setUploading(true);
 
+    try {
       const imageData = new FormData();
       imageData.append("image", selectedFile);
 
-      const response = await API.post(
-        `/trips/${id}/upload`,
-        imageData
-      );
-
-      toast.success(
-        response.data?.message ||
-          "Photo uploaded successfully!"
-      );
+      await API.post(`/trips/${id}/upload`, imageData);
 
       return true;
-    } catch (error) {
-      console.error("Photo Upload Error:", error);
+    } catch (err) {
+      console.error(
+        "Photo Upload Error:",
+        err.response?.data || err
+      );
 
       const errorMessage =
-        error.response?.data?.message ||
+        err.response?.data?.message ||
         "Failed to upload photo. Please try again.";
 
       setError(errorMessage);
@@ -1882,77 +2330,122 @@ function EditTrip() {
     }
   };
 
-  // Update trip
+  // Save trip details and then upload a replacement photo.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (saving) return;
+
     setError("");
     setMessage("");
+
+    const title = formData.title.trim();
+    const destination = formData.destination.trim();
+
+    if (!title || !destination) {
+      const errorMessage =
+        "Trip title and destination are required.";
+
+      setError(errorMessage);
+      toast.error(errorMessage);
+      return;
+    }
+
+    if (
+      formData.startDate &&
+      formData.endDate &&
+      formData.endDate < formData.startDate
+    ) {
+      const errorMessage =
+        "End date cannot be earlier than start date.";
+
+      setError(errorMessage);
+      toast.error(errorMessage);
+      return;
+    }
+
     setSaving(true);
+
+    let tripDetailsSaved = false;
 
     try {
       const dataToSend = {
-        title: formData.title,
-        destination: formData.destination,
+        title,
+        destination,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        description: formData.description,
-        rating: formData.rating
-          ? Number(formData.rating)
-          : undefined,
+        description: formData.description.trim(),
+        ...(formData.rating
+          ? { rating: Number(formData.rating) }
+          : {}),
       };
 
-      // Update trip information
       const response = await API.put(
         `/trips/${id}`,
         dataToSend
       );
 
-      // Upload a new photo if selected
+      tripDetailsSaved = true;
+
       if (selectedFile) {
         const uploadSuccess = await uploadPhoto();
 
-        if (!uploadSuccess) return;
+        if (!uploadSuccess) {
+          setMessage(
+            "Trip details were saved, but the photo was not updated. You can retry the photo upload."
+          );
+          return;
+        }
       }
 
-      const successMessage = selectedFile
-        ? "Trip updated and photo uploaded successfully!"
-        : response.data?.message ||
-          "Trip updated successfully!";
+      const successMessage =
+        response.data?.message ||
+        (selectedFile
+          ? "Trip and photo updated successfully!"
+          : "Trip updated successfully!");
 
       setMessage(successMessage);
       toast.success(successMessage);
 
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1200);
-    } catch (error) {
-      console.error("Update Trip Error:", error);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(
+        "Update Trip Error:",
+        err.response?.data || err
+      );
 
       const errorMessage =
-        error.response?.data?.message ||
+        err.response?.data?.message ||
+        err.message ||
         "Failed to update trip. Please try again.";
 
-      setError(errorMessage);
+      setError(
+        tripDetailsSaved
+          ? `Trip details were saved, but another operation failed. ${errorMessage}`
+          : errorMessage
+      );
+
       toast.error(errorMessage);
     } finally {
       setSaving(false);
     }
   };
 
-  // Loading state
+  // Loading state.
   if (loading) {
     return (
-      <>
+      <div className="trip-form-page">
         <Navbar />
-        <div className="loading" role="status">
-          Loading trip...
-        </div>
-      </>
+        <main className="trip-form-container">
+          <div className="loading" role="status" aria-live="polite">
+            Loading trip...
+          </div>
+        </main>
+      </div>
     );
   }
 
-  // Loading error state with retry button
+  // Load error with retry.
   if (loadError) {
     return (
       <div className="trip-form-page">
@@ -1995,9 +2488,7 @@ function EditTrip() {
         <div className="trip-form-header">
           <p className="small-heading">UPDATE MEMORY</p>
           <h1>Edit Your Trip</h1>
-          <p>
-            Update your trip details and add another memory.
-          </p>
+          <p>Update your trip details and add another memory.</p>
         </div>
 
         <div className="trip-form-card">
@@ -2023,6 +2514,7 @@ function EditTrip() {
                 placeholder="e.g. My Goa Adventure"
                 value={formData.title}
                 onChange={handleChange}
+                maxLength={100}
                 required
                 disabled={saving}
               />
@@ -2037,6 +2529,7 @@ function EditTrip() {
                 placeholder="e.g. Goa, India"
                 value={formData.destination}
                 onChange={handleChange}
+                maxLength={150}
                 required
                 disabled={saving}
               />
@@ -2051,6 +2544,7 @@ function EditTrip() {
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleChange}
+                  max={formData.endDate || undefined}
                   required
                   disabled={saving}
                 />
@@ -2064,6 +2558,7 @@ function EditTrip() {
                   name="endDate"
                   value={formData.endDate}
                   onChange={handleChange}
+                  min={formData.startDate || undefined}
                   required
                   disabled={saving}
                 />
@@ -2078,6 +2573,7 @@ function EditTrip() {
                 placeholder="Write something about your trip..."
                 value={formData.description}
                 onChange={handleChange}
+                maxLength={2000}
                 disabled={saving}
               />
             </div>
@@ -2101,7 +2597,7 @@ function EditTrip() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="image">Add Trip Photo</label>
+              <label htmlFor="image">Replace Trip Cover Photo</label>
               <input
                 id="image"
                 type="file"
@@ -2111,19 +2607,39 @@ function EditTrip() {
               />
 
               <small>
-                Select JPG, PNG or WEBP image.
-                Maximum size: 5 MB.
+                Optional. JPG, PNG, or WEBP; maximum size 5 MB.
+                Leave empty to keep the current photo.
               </small>
             </div>
 
             {preview && (
               <div className="image-preview-container">
                 <p className="small-heading">PHOTO PREVIEW</p>
+
                 <img
                   src={preview}
-                  alt="Trip preview"
+                  alt="Trip cover preview"
                   className="image-preview"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
+
+                {selectedFile && (
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setPreview("");
+                      const input = document.getElementById("image");
+                      if (input) input.value = "";
+                    }}
+                    disabled={saving}
+                  >
+                    Cancel Photo Change
+                  </button>
+                )}
               </div>
             )}
 
@@ -2133,9 +2649,11 @@ function EditTrip() {
                 className="primary-button"
                 disabled={saving || uploading}
               >
-                {saving || uploading
-                  ? "Saving..."
-                  : "Save Changes"}
+                {uploading
+                  ? "Uploading Photo..."
+                  : saving
+                    ? "Saving..."
+                    : "Save Changes"}
               </button>
 
               <button

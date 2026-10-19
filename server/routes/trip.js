@@ -1764,66 +1764,156 @@ function handleImageUpload(req, res, next) {
 // POST /api/trips/:id/upload
 // ========================================
 
+// router.post(
+//   "/:id/upload",
+//   authMiddleware,
+//   handleImageUpload,
+//   async (req, res) => {
+//     try {
+//       const { id } = req.params;
+
+//       if (!isValidId(id)) {
+//         return res.status(400).json({
+//           message: "Invalid trip ID",
+//         });
+//       }
+
+//       if (!req.file) {
+//         return res.status(400).json({
+//           message: "No image uploaded",
+//         });
+//       }
+
+//       if (!req.file.path) {
+//         return res.status(400).json({
+//           message: "Uploaded image is invalid",
+//         });
+//       }
+
+//       // Verify ownership before associating the image with a trip.
+//       const trip = await Trip.findOne({
+//         _id: id,
+//         user: req.user.userId,
+//       });
+
+//       if (!trip) {
+//         return res.status(404).json({
+//           message: "Trip not found or you are not the owner",
+//         });
+//       }
+
+//       const imageUrl = req.file.path;
+
+//       if (!trip.coverImage) {
+//         trip.coverImage = imageUrl;
+//       }
+
+//       if (!Array.isArray(trip.photos)) {
+//         trip.photos = [];
+//       }
+
+//       trip.photos.push(imageUrl);
+
+//       const updatedTrip = await trip.save();
+
+//       return res.status(200).json({
+//         message: "Photo uploaded successfully",
+//         trip: updatedTrip,
+//       });
+//     } catch (error) {
+//       return handleRouteError(res, error, "Upload Photo Error");
+//     }
+//   }
+// );
+
+ // ========================================
+ // VERIFY TRIP OWNERSHIP BEFORE UPLOADING
+ // ========================================
+
+async function verifyTripOwnership(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    if (!isValidId(id)) {
+      return res.status(400).json({
+        message: "Invalid trip ID",
+      });
+    }
+
+    const trip = await Trip.findOne({
+      _id: id,
+      user: req.user.userId,
+    });
+
+    if (!trip) {
+      return res.status(404).json({
+        message: "Trip not found or you are not the owner",
+      });
+    }
+
+    req.trip = trip;
+    next();
+  } catch (error) {
+    return handleRouteError(
+      res,
+      error,
+      "Verify Trip Ownership Error"
+    );
+  }
+}
+
+// ========================================
+// UPLOAD TRIP PHOTO
+// POST /api/trips/:id/upload
+// ========================================
+
 router.post(
   "/:id/upload",
   authMiddleware,
+  verifyTripOwnership,
   handleImageUpload,
   async (req, res) => {
     try {
-      const { id } = req.params;
-
-      if (!isValidId(id)) {
+      if (!req.file || !req.file.path) {
         return res.status(400).json({
-          message: "Invalid trip ID",
+          message: "Please select a valid image to upload.",
         });
       }
 
-      if (!req.file) {
-        return res.status(400).json({
-          message: "No image uploaded",
-        });
-      }
+      // Get the trip verified by the ownership middleware.
+      const trip = req.trip;
 
-      if (!req.file.path) {
-        return res.status(400).json({
-          message: "Uploaded image is invalid",
-        });
-      }
-
-      // Verify ownership before associating the image with a trip.
-      const trip = await Trip.findOne({
-        _id: id,
-        user: req.user.userId,
-      });
-
-      if (!trip) {
-        return res.status(404).json({
-          message: "Trip not found or you are not the owner",
-        });
-      }
-
+      // CloudinaryStorage provides the uploaded image URL in req.file.path.
       const imageUrl = req.file.path;
 
-      if (!trip.coverImage) {
-        trip.coverImage = imageUrl;
-      }
+      // Save the latest uploaded image as the cover image.
+      trip.coverImage = imageUrl;
 
+      // Keep the uploaded image in the trip's photo gallery.
       if (!Array.isArray(trip.photos)) {
         trip.photos = [];
       }
 
-      trip.photos.push(imageUrl);
+      if (!trip.photos.includes(imageUrl)) {
+        trip.photos.push(imageUrl);
+      }
 
       const updatedTrip = await trip.save();
 
       return res.status(200).json({
-        message: "Photo uploaded successfully",
+        message: "Trip cover image uploaded successfully.",
+        coverImage: updatedTrip.coverImage,
         trip: updatedTrip,
       });
     } catch (error) {
-      return handleRouteError(res, error, "Upload Photo Error");
+      return handleRouteError(
+        res,
+        error,
+        "Upload Trip Photo Error"
+      );
     }
   }
 );
+
 
 module.exports = router;
