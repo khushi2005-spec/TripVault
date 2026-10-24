@@ -1,54 +1,3 @@
-// const express = require("express");
-// const User = require("../models/User");
-// const Trip = require("../models/Trip");
-
-// const router = express.Router();
-
-// // Public Profile
-// // GET /api/users/:username/profile
-// router.get("/:username/profile", async (req, res) => {
-//   try {
-//     const { username } = req.params;
-
-//     // Find user by username
-//     const user = await User.findOne({
-//       username: username.toLowerCase(),
-//     }).select("name username bio");
-
-//     if (!user) {
-//       return res.status(404).json({
-//         message: "User not found",
-//       });
-//     }
-
-//     // Find user's trips
-//     const trips = await Trip.find({
-//       user: user._id,
-//     })
-//       .select(
-//         "title destination startDate endDate rating coverImage"
-//       )
-//       .sort({ createdAt: -1 });
-
-//     res.status(200).json({
-//       profile: {
-//         name: user.name,
-//         username: user.username,
-//         bio: user.bio,
-//         trips,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Public Profile Error:", error);
-
-//     res.status(500).json({
-//       message: "Server error",
-//     });
-//   }
-// });
-
-// module.exports = router;
-
 const express = require("express");
 const User = require("../models/user");
 const Trip = require("../models/Trip");
@@ -124,17 +73,25 @@ router.put(
     try {
       const { username, bio } = req.body;
 
+      
       // Check username
-      if (!username || !username.trim()) {
+      if (typeof username !== "string" || !username.trim()) {
         return res.status(400).json({
           message: "Username is required",
         });
       }
 
       // Clean username
-      const cleanUsername = username
-        .trim()
-        .toLowerCase();
+      const cleanUsername = username.trim().toLowerCase();
+
+      // Apply the same username rules as registration
+      if (!/^[a-z0-9_]{3,20}$/.test(cleanUsername)) {
+        return res.status(400).json({
+          message:
+            "Username must be 3-20 characters and contain only letters, numbers and underscores",
+        });
+      }
+
 
       // Check if another user already has this username
       const existingUser = await User.findOne({
